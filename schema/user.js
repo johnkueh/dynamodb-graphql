@@ -94,3 +94,28 @@ export const LoginMutation = mutationField("login", {
     });
   }
 });
+
+export const UpdateUserType = inputObjectType({
+  name: "UpdateUserInput",
+  definition(t) {
+    t.string("name", { required: false });
+    t.string("email", { required: false });
+    t.string("password", { required: false });
+  }
+});
+
+export const UpdateUserMutation = mutationField("updateUser", {
+  type: UserType,
+  args: {
+    input: arg({
+      type: UpdateUserType,
+      required: true
+    })
+  },
+  resolve: async (parent, { input }, ctx) => {
+    return User.update({
+      id: ctx.user.id,
+      ...input
+    });
+  }
+});

@@ -41,22 +41,53 @@ export const getByEmail = async email => {
 
 export const create = async ({ name, email, password }) => {
   const id = uuidv4();
-  await dynamoDb
-    .put({
-      TableName: process.env.DYNAMODB_TABLE,
-      Item: {
-        PK: id,
-        SK: "user",
-        GSI1PK: "user",
-        GSI1SK: email,
-        name,
-        email,
-        tz: "America/Los_Angeles",
-        password: bcrypt.hashSync(password, 10)
-      }
-    })
-    .promise();
+  const params = {
+    TableName: process.env.DYNAMODB_TABLE,
+    Item: {
+      PK: id,
+      SK: "user",
+      GSI1PK: "user",
+      GSI1SK: email,
+      name,
+      email,
+      tz: "America/Los_Angeles",
+      password: bcrypt.hashSync(password, 10)
+    }
+  };
+  await dynamoDb.put(params).promise();
   const user = await getById(id);
+  return user;
+};
+
+export const update = async input => {
+  const updateKeys = Object.keys(input);
+  const updateExpressions = [];
+  const ExpressionAttributeNames = {};
+  const ExpressionAttributeValues = {};
+  updateKeys.forEach(key => {
+    updateExpressions.push(`#${key} = :${key}`);
+    ExpressionAttributeNames[`#${key}`] = key;
+    ExpressionAttributeValues[`:${key}`] = input[key];
+  });
+  const UpdateExpression = `set ${updateExpressions.join(", ")}`;
+
+  // console.log("UpdateExpression", UpdateExpression);
+  // console.log("ExpressionAttributeNames", ExpressionAttributeNames);
+  // console.log("ExpressionAttributeValues", ExpressionAttributeValues);
+
+  const params = {
+    TableName: process.env.DYNAMODB_TABLE,
+    Key: {
+      PK: input.id,
+      SK: "user"
+    },
+    UpdateExpression,
+    ExpressionAttributeNames,
+    ExpressionAttributeValues,
+    ReturnValues: "ALL_NEW"
+  };
+
+  const { Attributes: user } = await dynamoDb.update(params).promise();
   return user;
 };
 
@@ -75,5 +106,6 @@ const userObject = user => ({
 export default {
   getById,
   getByEmail,
-  create
+  create,
+  update
 };
