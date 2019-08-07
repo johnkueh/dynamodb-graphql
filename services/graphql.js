@@ -1,80 +1,40 @@
 import { ApolloServer, gql } from "apollo-server-lambda";
+import { makeSchema } from "nexus";
+import { applyMiddleware } from "graphql-middleware";
+import jsonwebtoken from "jsonwebtoken";
+import * as types from "../schema";
+import User from "../models/user";
 
-const books = [
-  { id: 1, title: "The Trials of Brother Jero", rating: 8, authorId: 1 },
-  { id: 2, title: "Half of a Yellow Sun", rating: 9, authorId: 3 },
-  { id: 3, title: "Americanah", rating: 9, authorId: 3 },
-  { id: 4, title: "King Baabu", rating: 9, authorId: 1 },
-  { id: 5, title: "Children of Blood and Bone", rating: 8, authorId: 2 }
-];
+const schema = applyMiddleware(
+  makeSchema({
+    types,
+    outputs: false,
+    shouldGenerateArtifacts: false
+  })
+);
 
-const authors = [
-  { id: 1, firstName: "Wole", lastName: "Soyinka" },
-  { id: 2, firstName: "Tomi", lastName: "Adeyemi" },
-  { id: 3, firstName: "Chimamanda", lastName: "Adichie" }
-];
+const context = async ({ event }) => {
+  let user = null;
 
-const typeDefs = gql`
-  type Author {
-    id: Int!
-    firstName: String!
-    lastName: String!
-    books: [Book]! # the list of books by this author
-  }
-  type Book {
-    id: Int!
-    title: String!
-    rating: Int!
-    author: Author!
-  }
-  # the schema allows the following query
-  type Query {
-    books: [Book!]!
-    book(id: Int!): Book!
-    author(id: Int!): Author!
-  }
-  # this schema allows the following mutation
-  type Mutation {
-    addBook(title: String!, rating: Int!, authorId: Int!): Book!
-  }
-`;
-
-let bookId = 5;
-
-const resolvers = {
-  Query: {
-    books: () => books,
-    book: (_, { id }) => books.find(book => book.id === id),
-    author: (_, { id }) => authors.find(author => author.id === id)
-  },
-  Mutation: {
-    addBook: (_, { title, rating, authorId }) => {
-      bookId++;
-
-      const newBook = {
-        id: bookId,
-        title,
-        rating,
-        authorId
-      };
-
-      books.push(newBook);
-      return newBook;
+  const { Authorization } = event.headers;
+  if (Authorization) {
+    const jwt = Authorization.replace("Bearer ", "");
+    const { id } = jsonwebtoken.verify(jwt, "JWTSECRET");
+    if (id) {
+      user = await User.getById(id);
     }
-  },
-  Author: {
-    books: author => books.filter(book => book.authorId === author.id)
-  },
-  Book: {
-    author: book => authors.find(author => author.id === book.authorId)
   }
+
+  return {
+    user
+  };
 };
 
-const server = new ApolloServer({
-  typeDefs,
-  resolvers,
+export const server = new ApolloServer({
   introspection: true,
-  playground: true
+  playground: true,
+  schema,
+  context
 });
 
 export const handler = server.createHandler({
