@@ -4,6 +4,14 @@ provider:
   name: aws
   runtime: nodejs10.x
   stage: prod
+  environment:
+    DYNAMODB_TABLE: ${self:service}-${self:provider.stage}
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:GetItem
+        - dynamodb:UpdateItem
+      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
 
 plugins:
   - serverless-webpack
@@ -30,3 +38,23 @@ functions:
           path: graphql
           method: get
           cors: true
+
+resources:
+  Resources:
+    DynamoDBGraphql:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        KeySchema:
+          - AttributeName: PK
+            KeyType: HASH
+          - AttributeName: SK
+            KeyType: RANGE
+        AttributeDefinitions:
+          - AttributeName: PK
+            AttributeType: S
+          - AttributeName: SK
+            AttributeType: S
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:provider.environment.DYNAMODB_TABLE}
