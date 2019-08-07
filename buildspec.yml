@@ -1,0 +1,19 @@
+version: 0.1
+phases:
+  install:
+    commands:
+      - npm install --silent --no-progress -g yarn
+      - yarn global add serverless --silent --no-progress
+  pre_build:
+    commands:
+      - yarn install --silent --no-progress
+  build:
+    commands:
+      # - npm run test
+  post_build:
+    commands:
+      - serverless deploy --stage prod
+
+artifacts:
+  files:
+    - serverless.yml

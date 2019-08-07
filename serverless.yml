@@ -1,0 +1,31 @@
+service: dynamodb-graphql
+
+provider:
+  name: aws
+  runtime: nodejs10.x
+  stage: prod
+
+plugins:
+  - serverless-webpack
+  - serverless-offline
+
+custom:
+  webpack:
+    webpackConfig: ./webpack.config.js
+    packager: yarn
+
+package:
+  individually: true
+
+functions:
+  graphql:
+    handler: ./services/graphql.handler
+    events:
+      - http:
+          path: graphql
+          method: post
+          cors: true
+      - http:
+          path: graphql
+          method: get
+          cors: true
