@@ -95,7 +95,7 @@ export const LoginMutation = mutationField("login", {
   }
 });
 
-export const UpdateUserType = inputObjectType({
+export const UpdateUserInputType = inputObjectType({
   name: "UpdateUserInput",
   definition(t) {
     t.string("name", { required: false });
@@ -108,7 +108,7 @@ export const UpdateUserMutation = mutationField("updateUser", {
   type: UserType,
   args: {
     input: arg({
-      type: UpdateUserType,
+      type: UpdateUserInputType,
       required: true
     })
   },
@@ -117,5 +117,26 @@ export const UpdateUserMutation = mutationField("updateUser", {
       id: ctx.user.id,
       ...input
     });
+  }
+});
+
+export const DeleteUserInputType = inputObjectType({
+  name: "DeleteUserInput",
+  definition(t) {
+    t.string("id", { required: true });
+  }
+});
+
+export const DeleteUserMutation = mutationField("deleteUser", {
+  type: "DeletePayload",
+  args: {
+    input: arg({
+      type: DeleteUserInputType,
+      required: true
+    })
+  },
+  resolve: async (parent, { input }, ctx) => {
+    const user = await User.destroy(input.id);
+    return user;
   }
 });

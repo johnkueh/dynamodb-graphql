@@ -1,6 +1,9 @@
 service: dynamodb-graphql
 
 provider:
+  tracing:
+    apiGateway: true
+    lambda: true
   name: aws
   runtime: nodejs10.x
   stage: prod

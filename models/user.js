@@ -92,6 +92,21 @@ export const update = async input => {
   return user;
 };
 
+export const destroy = async id => {
+  const params = {
+    TableName: process.env.DYNAMODB_TABLE,
+    Key: {
+      PK: id,
+      SK: "user"
+    }
+  };
+
+  await dynamoDb.delete(params).promise();
+  return {
+    id
+  };
+};
+
 const getJwt = ({ id, email }) => {
   return jsonwebtoken.sign({ id, email }, "JWTSECRET");
 };
@@ -107,5 +122,6 @@ export default {
   getById,
   getByEmail,
   create,
-  update
+  update,
+  destroy
 };

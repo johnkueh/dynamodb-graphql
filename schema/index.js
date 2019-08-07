@@ -7,7 +7,7 @@ export const GQLDateTime = asNexusMethod(GraphQLDateTime, "dateTime");
 export const DeletedType = objectType({
   name: "DeletePayload",
   definition(t) {
-    t.int("count");
+    t.id("id");
   }
 });
 
