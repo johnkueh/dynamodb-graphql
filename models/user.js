@@ -48,6 +48,7 @@ export const create = async ({ name, email, password }) => {
       SK: "user",
       GSI1PK: "user",
       GSI1SK: email,
+      id,
       name,
       email,
       tz: "America/Los_Angeles",
@@ -97,7 +98,6 @@ const getJwt = ({ id, email }) => {
 const validPassword = (password, hashedPassword) =>
   bcrypt.compareSync(password, hashedPassword);
 const userObject = user => ({
-  id: user.PK,
   jwt: getJwt({ id: user.PK, email: user.email }),
   validPassword: password => validPassword(password, user.password),
   ...user
