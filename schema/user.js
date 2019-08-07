@@ -7,6 +7,7 @@ import {
 } from "nexus";
 import ValidationErrors from "../lib/validation-errors";
 import User from "../models/user";
+import Team from "../models/team";
 
 export const UserType = objectType({
   name: "User",
@@ -32,6 +33,7 @@ export const SignupInputType = inputObjectType({
     t.string("name", { required: true });
     t.string("email", { required: true });
     t.string("password", { required: true });
+    t.string("teamName", { required: true });
   }
 });
 
@@ -45,6 +47,11 @@ export const SignupMutation = mutationField("signup", {
   },
   resolve: async (parent, { input }) => {
     const user = await User.create(input);
+    const team = await Team.create({ name: input.teamName });
+    await Team.addUser({
+      userId: user.id,
+      teamId: team.id
+    });
     return {
       jwt: user.jwt,
       user

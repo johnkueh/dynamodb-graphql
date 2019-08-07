@@ -72,10 +72,6 @@ export const update = async input => {
   });
   const UpdateExpression = `set ${updateExpressions.join(", ")}`;
 
-  // console.log("UpdateExpression", UpdateExpression);
-  // console.log("ExpressionAttributeNames", ExpressionAttributeNames);
-  // console.log("ExpressionAttributeValues", ExpressionAttributeValues);
-
   const params = {
     TableName: process.env.DYNAMODB_TABLE,
     Key: {
@@ -115,6 +111,7 @@ const validPassword = (password, hashedPassword) =>
 const userObject = user => ({
   jwt: getJwt({ id: user.PK, email: user.email }),
   validPassword: password => validPassword(password, user.password),
+  teamId: user.GSI2SK,
   ...user
 });
 
