@@ -123,18 +123,18 @@ describe("Logging in", () => {
   });
 
   it("is able to login with correct credentials", async () => {
-    // await factory.create('user', {
-    //   name: 'John Doe',
-    //   email: 'john@doe.com',
-    //   password: 'password'
-    // });
+    await Queries.putUser({
+      name: "Jedi Knight",
+      email: "jedi@knight.com",
+      password: "youshallnotpass"
+    });
 
     const res = await performQuery({
       query: LOGIN,
       variables: {
         input: {
-          email: "john@doe.com",
-          password: "password"
+          email: "jedi@knight.com",
+          password: "youshallnotpass"
         }
       }
     });

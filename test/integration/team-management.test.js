@@ -177,11 +177,11 @@ describe("Adding team users", () => {
   `;
   beforeEach(async () => {
     user = await Queries.putUser({
-      name: "John 1",
-      email: "john1@doe.com",
+      name: "Rowan Atkinson",
+      email: "rowan@atkinson.com",
       password: "password"
     });
-    const team = await Queries.putTeam({ name: "Cool team" });
+    const team = await Queries.putTeam({ name: "Mr Bean" });
     await Queries.addUserToTeam({ user, team });
   });
 
@@ -222,8 +222,8 @@ describe("Adding team users", () => {
       query,
       variables: {
         input: {
-          name: "New member",
-          email: "darth@vader.com"
+          name: "Felicity Atkinson",
+          email: "felicity@atkinson.com"
         }
       }
     });
