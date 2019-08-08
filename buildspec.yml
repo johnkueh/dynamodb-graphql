@@ -9,9 +9,8 @@ phases:
       - yarn install --silent --no-progress
   build:
     commands:
-      - serverless dynamodb install
+      - serverless dynamodb install >/dev/null
       - yarn test
-      - yarn jest
   post_build:
     commands:
       - serverless deploy --stage prod
