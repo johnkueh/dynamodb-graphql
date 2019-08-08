@@ -9,7 +9,7 @@ phases:
       - yarn install --silent --no-progress
   build:
     commands:
-      - serverless dynamodb install
+      # - serverless dynamodb install
       # - yarn test
   post_build:
     commands:
