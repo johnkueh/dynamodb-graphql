@@ -2,10 +2,11 @@ version: 0.1
 phases:
   install:
     commands:
-      - npm install serverless --silent --no-progress -g
+      - npm install --silent --no-progress -g yarn
+      - yarn global add serverless --silent --no-progress
   pre_build:
     commands:
-      - npm install --silent --no-progress
+      - yarn install --silent --no-progress
   build:
     commands:
       - serverless dynamodb install
