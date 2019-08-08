@@ -9,7 +9,8 @@ phases:
       - yarn install --silent --no-progress
   build:
     commands:
-      # - npm run test
+      - sls dynamodb install
+      # - yarn test
   post_build:
     commands:
       - serverless deploy --stage prod

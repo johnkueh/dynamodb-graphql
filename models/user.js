@@ -2,8 +2,7 @@ import AWS from "aws-sdk";
 import uuidv4 from "uuid/v4";
 import bcrypt from "bcryptjs";
 import jsonwebtoken from "jsonwebtoken";
-
-const dynamoDb = new AWS.DynamoDB.DocumentClient();
+import { dynamodb } from "../lib/dynamodb-client";
 
 export const getById = async id => {
   const params = {
@@ -13,7 +12,7 @@ export const getById = async id => {
       SK: "user"
     }
   };
-  const { Item: user } = await dynamoDb.get(params).promise();
+  const { Item: user } = await dynamodb.get(params).promise();
 
   if (user == null) return null;
 
@@ -31,7 +30,7 @@ export const getByEmail = async email => {
     }
   };
 
-  const { Items } = await dynamoDb.query(params).promise();
+  const { Items } = await dynamodb.query(params).promise();
   const user = Items[0];
 
   if (user == null) return null;
@@ -55,7 +54,7 @@ export const create = async ({ name, email, password }) => {
       password: bcrypt.hashSync(password, 10)
     }
   };
-  await dynamoDb.put(params).promise();
+  await dynamodb.put(params).promise();
   const user = await getById(id);
   return user;
 };
@@ -84,7 +83,7 @@ export const update = async input => {
     ReturnValues: "ALL_NEW"
   };
 
-  const { Attributes: user } = await dynamoDb.update(params).promise();
+  const { Attributes: user } = await dynamodb.update(params).promise();
   return user;
 };
 
@@ -97,7 +96,7 @@ export const destroy = async id => {
     }
   };
 
-  await dynamoDb.delete(params).promise();
+  await dynamodb.delete(params).promise();
   return {
     id
   };

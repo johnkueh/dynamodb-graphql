@@ -6,7 +6,7 @@ provider:
     lambda: true
   name: aws
   runtime: nodejs10.x
-  stage: prod
+  stage: ${self:provider.environment.NODE_ENV, 'dev'}
   environment:
     DYNAMODB_TABLE: ${self:service}-${self:provider.stage}
   iamRoleStatements:
@@ -26,12 +26,19 @@ provider:
 
 plugins:
   - serverless-webpack
+  - serverless-dynamodb-local
   - serverless-offline
 
 custom:
   webpack:
     webpackConfig: ./webpack.config.js
     includeModules: true
+  dynamodb:
+    start:
+      migrate: true
+    stages:
+      - dev
+      - test
 
 package:
   individually: true

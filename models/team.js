@@ -1,7 +1,5 @@
-import AWS from "aws-sdk";
 import uuidv4 from "uuid/v4";
-
-const dynamoDb = new AWS.DynamoDB.DocumentClient();
+import { dynamodb } from "../lib/dynamodb-client";
 
 export const getById = async id => {
   const params = {
@@ -11,7 +9,7 @@ export const getById = async id => {
       SK: "team"
     }
   };
-  const { Item: team } = await dynamoDb.get(params).promise();
+  const { Item: team } = await dynamodb.get(params).promise();
 
   if (team == null) return null;
 
@@ -29,7 +27,7 @@ export const create = async ({ name }) => {
       name
     }
   };
-  await dynamoDb.put(params).promise();
+  await dynamodb.put(params).promise();
   const team = await getById(id);
   return team;
 };
@@ -58,7 +56,7 @@ export const update = async input => {
     ReturnValues: "ALL_NEW"
   };
 
-  const { Attributes: team } = await dynamoDb.update(params).promise();
+  const { Attributes: team } = await dynamodb.update(params).promise();
   return team;
 };
 
@@ -73,7 +71,7 @@ export const getUsers = async id => {
     }
   };
 
-  const { Items } = await dynamoDb.query(params).promise();
+  const { Items } = await dynamodb.query(params).promise();
   return Items;
 };
 
@@ -98,7 +96,7 @@ export const addUser = async ({ teamId, userId }) => {
 
   console.log(params);
 
-  const { Attributes: user } = await dynamoDb.update(params).promise();
+  const { Attributes: user } = await dynamodb.update(params).promise();
   return user;
 };
 
