@@ -63,6 +63,17 @@ export const Queries = {
     await deleteByKey(userId);
     return { id: userId };
   },
+  createUserWithTeam: async ({ email, password = "", teamName, ...input }) => {
+    const user = await Queries.putUser({
+      email,
+      password,
+      ...input
+    });
+    const team = await Queries.putTeam({ name: teamName });
+    await Queries.addUserToTeam({ user, team });
+    user.team = team;
+    return user;
+  },
   fetchTeamById: async teamId => {
     return fetchByKey({
       PK: teamId,

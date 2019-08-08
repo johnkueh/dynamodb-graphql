@@ -33,7 +33,7 @@ Object {
   "data": Object {
     "team": Object {
       "id": Any<String>,
-      "name": "Cool team",
+      "name": "Chinese Ancient",
     },
   },
   "errors": undefined,
@@ -50,16 +50,22 @@ exports[`Listing team users able to get only own team users 1`] = `
 Object {
   "data": Object {
     "team": Object {
-      "name": "Cool team",
+      "name": "Gladiators",
       "users": Array [
         Object {
-          "email": Any<String>,
+          "email": "russell@crowe.com",
+          "name": "Russell Crowe",
+          "tz": "America/Los_Angeles",
         },
         Object {
-          "email": Any<String>,
+          "email": "maxwell@crowe.com",
+          "name": "Maxwell Crowe",
+          "tz": "America/Los_Angeles",
         },
         Object {
-          "email": Any<String>,
+          "email": "shannon@crowe.com",
+          "name": "Shannon Crowe",
+          "tz": "America/Los_Angeles",
         },
       ],
     },
@@ -78,11 +84,11 @@ exports[`Removing team users able to remove team members 1`] = `
 Object {
   "data": Object {
     "removeTeamUser": Object {
-      "name": "Cool team",
+      "name": "Despicable Me",
       "users": Array [
         Object {
-          "email": "john1@doe.com",
-          "name": "John 1",
+          "email": "gru@evilson.com",
+          "name": "Gru Evilson",
         },
       ],
     },
@@ -102,7 +108,7 @@ Object {
   "data": Object {
     "updateTeam": Object {
       "id": Any<String>,
-      "name": "Updated team",
+      "name": "Shadow forest",
     },
   },
   "errors": undefined,

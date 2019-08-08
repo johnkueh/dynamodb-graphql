@@ -13,16 +13,13 @@ describe("Fetching team", () => {
     }
   `;
   beforeEach(async () => {
-    user = await Queries.putUser({
-      name: "John Doe",
-      email: "john@doe.com",
-      password: "password"
+    user = await Queries.createUserWithTeam({
+      name: "Foo Manchu",
+      email: "foo@manchu.com",
+      password: "foomanchu",
+      teamName: "Chinese Ancient"
     });
-    team = await Queries.putTeam({ name: "Cool team" });
-    await Queries.addUserToTeam({
-      user,
-      team
-    });
+    team = user.team;
   });
 
   it("is able to fetch own team", async () => {
@@ -53,16 +50,13 @@ describe("Updating team", () => {
     }
   `;
   beforeEach(async () => {
-    user = await Queries.putUser({
-      name: "John Doe",
-      email: "john@doe.com",
-      password: "password"
+    user = await Queries.createUserWithTeam({
+      name: "Baby Panda",
+      email: "baby@panda.com",
+      password: "password",
+      teamName: "Bamboo Forest"
     });
-    team = await Queries.putTeam({ name: "Cool team" });
-    await Queries.addUserToTeam({
-      user,
-      team
-    });
+    team = user.team;
   });
 
   it("is able to update own team", async () => {
@@ -72,7 +66,7 @@ describe("Updating team", () => {
       variables: {
         input: {
           id: team.id,
-          name: "Updated team"
+          name: "Shadow forest"
         }
       }
     });
@@ -105,37 +99,34 @@ describe("Listing team users", () => {
     }
   `;
   beforeEach(async () => {
-    user = await Queries.putUser({
-      name: "John 1",
-      email: "john1@doe.com",
-      password: "password"
+    user = await Queries.createUserWithTeam({
+      name: "Russell Crowe",
+      email: "russell@crowe.com",
+      password: "password",
+      teamName: "Gladiators"
     });
+    team = user.team;
+
     const user2 = await Queries.putUser({
-      name: "John 2",
-      email: "john2@doe.com",
+      name: "Maxwell Crowe",
+      email: "maxwell@crowe.com",
       password: "password"
     });
     const user3 = await Queries.putUser({
-      name: "John 3",
-      email: "john3@doe.com",
+      name: "Shannon Crowe",
+      email: "shannon@crowe.com",
       password: "password"
     });
 
-    team = await Queries.putTeam({ name: "Cool team" });
-    await Queries.addUserToTeam({ user, team });
     await Queries.addUserToTeam({ user: user2, team });
     await Queries.addUserToTeam({ user: user3, team });
 
     // User not belonging to this team
-    const otherUser = await Queries.putUser({
-      name: "Next Doe",
-      email: "next@doe.com",
-      password: "password"
-    });
-    const otherTeam = await Queries.putTeam({ name: "Next team" });
-    await Queries.addUserToTeam({
-      user: otherUser,
-      team: otherTeam
+    await Queries.createUserWithTeam({
+      name: "Skylar Nightcrow",
+      email: "skylar@nightcrow.com",
+      password: "password",
+      teamName: "The Shining"
     });
   });
 
@@ -148,17 +139,7 @@ describe("Listing team users", () => {
       }
     });
 
-    expect(res).toMatchSnapshot({
-      data: {
-        team: {
-          users: [
-            { email: expect.any(String) },
-            { email: expect.any(String) },
-            { email: expect.any(String) }
-          ]
-        }
-      }
-    });
+    expect(res).toMatchSnapshot();
   });
 });
 
@@ -176,13 +157,12 @@ describe("Adding team users", () => {
     }
   `;
   beforeEach(async () => {
-    user = await Queries.putUser({
+    user = await Queries.createUserWithTeam({
       name: "Rowan Atkinson",
       email: "rowan@atkinson.com",
-      password: "password"
+      password: "password",
+      teamName: "Mr Bean"
     });
-    const team = await Queries.putTeam({ name: "Mr Bean" });
-    await Queries.addUserToTeam({ user, team });
   });
 
   // it('unable to add team member with existing email', async () => {
@@ -247,13 +227,13 @@ describe("Removing team users", () => {
     }
   `;
   beforeEach(async () => {
-    user = await Queries.putUser({
-      name: "John 1",
-      email: "john1@doe.com",
-      password: "password"
+    user = await Queries.createUserWithTeam({
+      name: "Gru Evilson",
+      email: "gru@evilson.com",
+      password: "password",
+      teamName: "Despicable Me"
     });
-    team = await Queries.putTeam({ name: "Cool team" });
-    await Queries.addUserToTeam({ user, team });
+    team = user.team;
   });
 
   // it("not able to remove other team's members", async () => {
@@ -272,8 +252,8 @@ describe("Removing team users", () => {
 
   it("able to remove team members", async () => {
     const teamUser = await Queries.putUser({
-      name: "John 2",
-      email: "john2@doe.com",
+      name: "Minion 1",
+      email: "minion1@despicable.com",
       password: "password"
     });
     await Queries.addUserToTeam({ user: teamUser, team });
