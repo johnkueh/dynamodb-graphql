@@ -3,7 +3,7 @@ import { makeSchema } from "nexus";
 import { applyMiddleware } from "graphql-middleware";
 import jsonwebtoken from "jsonwebtoken";
 import * as types from "../schema";
-import User from "../models/user";
+import { Queries } from "../dynamodb/queries";
 
 const schema = applyMiddleware(
   makeSchema({
@@ -21,7 +21,7 @@ const userContext = async ({ event }) => {
     const jwt = Authorization.replace("Bearer ", "");
     const { id } = jsonwebtoken.verify(jwt, "JWTSECRET");
     if (id) {
-      user = await User.fetchById(id);
+      user = await Queries.fetchUserById(id);
     }
   }
 

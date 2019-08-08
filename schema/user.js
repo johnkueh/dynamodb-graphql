@@ -6,8 +6,7 @@ import {
   mutationField
 } from "nexus";
 import ValidationErrors from "../lib/validation-errors";
-import User from "../models/user";
-import Team from "../models/team";
+import { Queries } from "../dynamodb/queries";
 
 export const UserType = objectType({
   name: "User",
@@ -19,7 +18,7 @@ export const UserType = objectType({
     t.field("team", {
       type: "Team",
       resolve: async ({ teamId }) => {
-        return Team.fetchById(teamId);
+        return Queries.fetchTeamById(teamId);
       }
     });
   }
@@ -52,13 +51,12 @@ export const SignupMutation = mutationField("signup", {
     })
   },
   resolve: async (parent, { input }) => {
-    const user = await User.create(input);
-    const team = await Team.create({ name: input.teamName });
-    await Team.addUser({
-      userId: user.id,
-      teamId: team.id
+    const user = await Queries.putUser(input);
+    const team = await Queries.putTeam({ name: input.teamName });
+    await Queries.addUserToTeam({
+      user,
+      team
     });
-    user.teamId = team.id;
     return {
       jwt: user.jwt,
       user
@@ -95,7 +93,7 @@ export const LoginMutation = mutationField("login", {
   },
   resolve: async (parent, { input }) => {
     const { email, password } = input;
-    const user = await User.fetchByEmail(email);
+    const user = await Queries.fetchUserByEmail(email);
     if (user && user.validPassword(password)) {
       return {
         jwt: user.jwt,
@@ -127,7 +125,7 @@ export const UpdateUserMutation = mutationField("updateUser", {
     })
   },
   resolve: async (parent, { input }, ctx) => {
-    return User.update({
+    return Queries.updateUser({
       id: ctx.user.id,
       ...input
     });
@@ -150,7 +148,7 @@ export const DeleteUserMutation = mutationField("deleteUser", {
     })
   },
   resolve: async (parent, { input }, ctx) => {
-    const user = await User.destroy(input.id);
+    const user = await Queries.deleteUser(input.id);
     return user;
   }
 });

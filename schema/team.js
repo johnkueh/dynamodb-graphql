@@ -1,13 +1,11 @@
-import { isEmpty, difference } from "lodash";
 import {
   objectType,
   inputObjectType,
   queryField,
   mutationField,
-  arg,
-  stringArg
+  arg
 } from "nexus";
-import Team from "../models/team";
+import { Queries } from "../dynamodb/queries";
 
 export const TeamType = objectType({
   name: "Team",
@@ -17,7 +15,7 @@ export const TeamType = objectType({
     t.list.field("users", {
       type: "User",
       resolve: async ({ id: teamId }) => {
-        return Team.getUsers(teamId);
+        return Queries.fetchTeamUsers({ teamId });
       }
     });
   }
@@ -26,7 +24,7 @@ export const TeamType = objectType({
 export const TeamQuery = queryField("team", {
   type: TeamType,
   resolve: async (parent, args, ctx) => {
-    return Team.fetchById(ctx.user.teamId);
+    return Queries.fetchTeamById(ctx.user.teamId);
   }
 });
 
@@ -47,23 +45,10 @@ export const UpdateTeamMutation = mutationField("updateTeam", {
     })
   },
   resolve: async (parent, { input }, ctx) => {
-    const team = await Team.update({
+    const team = await Queries.updateTeam({
       id: ctx.user.teamId,
       ...input
     });
-
-    // if (cultureValueIds != null) {
-    //   const teamCultureValues = await team.$relatedQuery('cultureValues');
-    //   const relateIds = difference(cultureValueIds, teamCultureValues.map(({ id }) => id));
-    //   const unrelateIds = difference(teamCultureValues.map(({ id }) => id), cultureValueIds);
-
-    //   await team
-    //     .$relatedQuery('cultureValues')
-    //     .where('cultureValues.id', 'IN', unrelateIds)
-    //     .unrelate();
-    //   await team.$relatedQuery('cultureValues').relate(relateIds);
-    // }
-
     return team;
   }
 });

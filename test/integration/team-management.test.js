@@ -1,6 +1,5 @@
 import { query as performQuery } from "../support/apollo-test-helper";
-import User from "../../models/user";
-import Team from "../../models/team";
+import { Queries } from "../../dynamodb/queries";
 
 describe("Fetching team", () => {
   let user;
@@ -14,17 +13,16 @@ describe("Fetching team", () => {
     }
   `;
   beforeEach(async () => {
-    user = await User.create({
+    user = await Queries.putUser({
       name: "John Doe",
       email: "john@doe.com",
       password: "password"
     });
-    team = await Team.create({ name: "Cool team" });
-    await Team.addUser({
-      userId: user.id,
-      teamId: team.id
+    team = await Queries.putTeam({ name: "Cool team" });
+    await Queries.addUserToTeam({
+      user,
+      team
     });
-    user.teamId = team.id;
   });
 
   it("is able to fetch own team", async () => {
@@ -55,17 +53,16 @@ describe("Updating team", () => {
     }
   `;
   beforeEach(async () => {
-    user = await User.create({
+    user = await Queries.putUser({
       name: "John Doe",
       email: "john@doe.com",
       password: "password"
     });
-    team = await Team.create({ name: "Cool team" });
-    await Team.addUser({
-      userId: user.id,
-      teamId: team.id
+    team = await Queries.putTeam({ name: "Cool team" });
+    await Queries.addUserToTeam({
+      user,
+      team
     });
-    user.teamId = team.id;
   });
 
   it("is able to update own team", async () => {

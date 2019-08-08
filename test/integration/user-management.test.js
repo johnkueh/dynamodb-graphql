@@ -1,5 +1,5 @@
 import { query as performQuery } from "../support/apollo-test-helper";
-import User from "../../models/user";
+import { Queries } from "../../dynamodb/queries";
 
 describe("Signing up", () => {
   // it('is not able to signup with missing fields', async () => {
@@ -152,7 +152,7 @@ describe("Logging in", () => {
 describe("Fetching user profile", () => {
   let user;
   beforeEach(async () => {
-    user = await User.create({
+    user = await Queries.putUser({
       name: "John Doe",
       email: "john@doe.com",
       password: "password"
@@ -200,7 +200,7 @@ describe("Fetching user profile", () => {
 describe("Updating user profile", () => {
   let user;
   beforeEach(async () => {
-    user = await User.create({
+    user = await Queries.putUser({
       name: "John Doe",
       email: "john@doe.com",
       password: "password"
