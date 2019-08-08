@@ -1,3 +1,7 @@
+import * as yup from "yup";
+import capitalize from "lodash/capitalize";
+import { UserInputError } from "apollo-server-lambda";
+import moment from "moment-timezone";
 import { dynamodb } from "../lib/dynamodb-client";
 
 export const TableName = process.env.DYNAMODB_TABLE;
@@ -99,11 +103,36 @@ export const objectToExpression = (type, input) => {
   };
 };
 
+export const validate = (data, schema) => {
+  try {
+    schema.validateSync(data, { abortEarly: false });
+  } catch (error) {
+    const { name, inner } = error;
+    const errors = {};
+    inner.forEach(({ path, message }) => {
+      errors[path] = capitalize(message);
+    });
+    throw new UserInputError(name, {
+      errors
+    });
+  }
+};
+
+export const validateTimezone = () =>
+  yup.string().test("is-valid", "Timezone is not valid", value => {
+    // Dont run the test if value is undefined
+    if (value == null) return true;
+
+    return moment.tz.names().find(name => name === value);
+  });
+
 export default {
   fetchByKey,
   putByKey,
   putAndFetchByKey,
   updateByKey,
   deleteByKey,
-  objectToExpression
+  objectToExpression,
+  validate,
+  validateTimezone
 };

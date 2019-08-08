@@ -51,12 +51,7 @@ export const SignupMutation = mutationField("signup", {
     })
   },
   resolve: async (parent, { input }) => {
-    const user = await Queries.putUser(input);
-    const team = await Queries.putTeam({ name: input.teamName });
-    await Queries.addUserToTeam({
-      user,
-      team
-    });
+    const user = await Queries.createUserWithTeam(input);
     return {
       jwt: user.jwt,
       user

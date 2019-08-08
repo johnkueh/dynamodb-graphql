@@ -1,6 +1,9 @@
 import uuidv4 from "uuid/v4";
 import bcrypt from "bcryptjs";
 import jsonwebtoken from "jsonwebtoken";
+import * as yup from "yup";
+import { validate, validateTimezone } from "../helpers";
+
 import {
   fetchByKey,
   putByKey,
@@ -33,7 +36,21 @@ export const UserQueries = {
     const { Items } = await dynamodb.query(params).promise();
     return userObject(Items[0]);
   },
-  putUser: async ({ email, password = "", ...input }) => {
+  putUser: async data => {
+    const schema = yup.object().shape({
+      name: yup.string().min(1),
+      email: yup
+        .string()
+        .email()
+        .min(1),
+      password: yup.string().min(6),
+      tz: validateTimezone()
+    });
+
+    validate(data, schema);
+
+    const { email, password = "", ...input } = data;
+
     const PK = uuidv4();
     const SK = "user";
     await putByKey({
@@ -62,7 +79,21 @@ export const UserQueries = {
     await deleteByKey(userId);
     return { id: userId };
   },
-  createUserWithTeam: async ({ email, password = "", teamName, ...input }) => {
+  createUserWithTeam: async data => {
+    const schema = yup.object().shape({
+      name: yup.string().min(1),
+      email: yup
+        .string()
+        .email()
+        .min(1),
+      password: yup.string().min(6),
+      tz: validateTimezone(),
+      teamName: yup.string().min(1, "Team name must be at least 1 characters")
+    });
+
+    validate(data, schema);
+
+    const { email, password = "", teamName, ...input } = data;
     const user = await UserQueries.putUser({
       email,
       password,

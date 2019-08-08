@@ -19,38 +19,37 @@ describe("Signing up", () => {
   }
   `;
 
-  // it("is not able to signup with missing fields", async () => {
-  //   const res = await performQuery({
-  //     query: SIGNUP,
-  //     variables: {
-  //       input: {
-  //         name: "",
-  //         email: "dummy+user@testom",
-  //         password: "pass",
-  //         teamName: "Test team"
-  //       }
-  //     }
-  //   });
+  it("is not able to signup with missing fields", async () => {
+    const res = await performQuery({
+      query: SIGNUP,
+      variables: {
+        input: {
+          name: "",
+          email: "dummy+user@testom",
+          password: "pass",
+          teamName: "Test team"
+        }
+      }
+    });
 
-  //   expect(res.errors[0].extensions).toMatchSnapshot();
-  // });
+    expect(res.errors[0].extensions).toMatchSnapshot();
+  });
 
-  // it('is not able to signup with missing team name', async () => {
-  //   const res = await performQuery({
-  //     query: SIGNUP,
-  //     variables: {
-  //       input: {
-  //         name: '',
-  //         email: 'dummy+user@testom',
-  //         password: 'pass',
-  //         teamName: ''
-  //       }
-  //     }
-  //   });
+  it("is not able to signup with missing team name", async () => {
+    const res = await performQuery({
+      query: SIGNUP,
+      variables: {
+        input: {
+          name: "Kent Choe",
+          email: "dummy+user@test.com",
+          password: "password",
+          teamName: ""
+        }
+      }
+    });
 
-  //   expect(res.errors[0].extensions).toMatchSnapshot();
-  //   expect(await Team.query().resultSize()).toEqual(0);
-  // });
+    expect(res.errors[0].extensions).toMatchSnapshot();
+  });
 
   // it('is not able to signup with taken email', async () => {
   //   const existingUser = await factory.create('user');
