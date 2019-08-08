@@ -59,6 +59,23 @@ describe("Updating team", () => {
     team = user.team;
   });
 
+  it("is not able to update not own team", async () => {
+    const otherTeam = await Queries.putTeam({ name: "Darth Valley Knights" });
+
+    const res = await performQuery({
+      context: { user },
+      query,
+      variables: {
+        input: {
+          id: otherTeam.id,
+          name: "Updated team"
+        }
+      }
+    });
+
+    expect(res.errors[0].extensions).toMatchSnapshot();
+  });
+
   it("is able to update own team", async () => {
     const res = await performQuery({
       context: { user },
@@ -181,20 +198,20 @@ describe("Adding team users", () => {
   //   expect(res.errors[0].extensions).toMatchSnapshot();
   // });
 
-  // it('unable to add team member with missing fields', async () => {
-  //   const res = await performQuery({
-  //     context: { user },
-  //     query,
-  //     variables: {
-  //       input: {
-  //         name: '',
-  //         email: 'dummy+user@testom'
-  //       }
-  //     }
-  //   });
+  it("unable to add team member with missing fields", async () => {
+    const res = await performQuery({
+      context: { user },
+      query,
+      variables: {
+        input: {
+          name: "",
+          email: "dummy+user@testom"
+        }
+      }
+    });
 
-  //   expect(res.errors[0].extensions).toMatchSnapshot();
-  // });
+    expect(res.errors[0].extensions).toMatchSnapshot();
+  });
 
   it("able to add team members", async () => {
     const res = await performQuery({
@@ -236,19 +253,24 @@ describe("Removing team users", () => {
     team = user.team;
   });
 
-  // it("not able to remove other team's members", async () => {
-  //   const otherTeamUser = await factory.create('userWithTeam');
+  it("not able to remove other team's members", async () => {
+    const otherTeamUser = await Queries.createUserWithTeam({
+      name: "Thanos Son",
+      email: "thanos@son.com",
+      password: "thanos",
+      teamName: "Immortals"
+    });
 
-  //   const res = await performQuery({
-  //     context: { user },
-  //     query,
-  //     variables: {
-  //       id: otherTeamUser.id
-  //     }
-  //   });
+    const res = await performQuery({
+      context: { user },
+      query,
+      variables: {
+        id: otherTeamUser.id
+      }
+    });
 
-  //   expect(res.errors[0].extensions).toMatchSnapshot();
-  // });
+    expect(res.errors[0].extensions).toMatchSnapshot();
+  });
 
   it("able to remove team members", async () => {
     const teamUser = await Queries.putUser({
@@ -269,15 +291,15 @@ describe("Removing team users", () => {
     expect(res).toMatchSnapshot();
   });
 
-  // it('not able to remove oneself from own team', async () => {
-  //   const res = await performQuery({
-  //     context: { user },
-  //     query,
-  //     variables: {
-  //       id: user.id
-  //     }
-  //   });
+  it("not able to remove oneself from own team", async () => {
+    const res = await performQuery({
+      context: { user },
+      query,
+      variables: {
+        id: user.id
+      }
+    });
 
-  //   expect(res.errors[0].extensions).toMatchSnapshot();
-  // });
+    expect(res.errors[0].extensions).toMatchSnapshot();
+  });
 });

@@ -28,6 +28,18 @@ Object {
 }
 `;
 
+exports[`Adding team users unable to add team member with missing fields 1`] = `
+Object {
+  "code": "BAD_USER_INPUT",
+  "exception": Object {
+    "errors": Object {
+      "email": "Email must be a valid email",
+      "name": "Name must be at least 1 characters",
+    },
+  },
+}
+`;
+
 exports[`Fetching team is able to fetch own team 1`] = `
 Object {
   "data": Object {
@@ -103,6 +115,28 @@ Object {
 }
 `;
 
+exports[`Removing team users not able to remove oneself from own team 1`] = `
+Object {
+  "code": "BAD_USER_INPUT",
+  "exception": Object {
+    "errors": Object {
+      "auth": "You are not authorized to perform this action",
+    },
+  },
+}
+`;
+
+exports[`Removing team users not able to remove other team's members 1`] = `
+Object {
+  "code": "BAD_USER_INPUT",
+  "exception": Object {
+    "errors": Object {
+      "auth": "You are not authorized to perform this action",
+    },
+  },
+}
+`;
+
 exports[`Updating team is able to update own team 1`] = `
 Object {
   "data": Object {
@@ -116,6 +150,17 @@ Object {
   "http": Object {
     "headers": Headers {
       Symbol(map): Object {},
+    },
+  },
+}
+`;
+
+exports[`Updating team is not able to update not own team 1`] = `
+Object {
+  "code": "BAD_USER_INPUT",
+  "exception": Object {
+    "errors": Object {
+      "auth": "You are not authorized to perform this action",
     },
   },
 }

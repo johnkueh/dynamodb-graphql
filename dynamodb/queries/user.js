@@ -53,6 +53,7 @@ export const UserQueries = {
 
     const PK = uuidv4();
     const SK = "user";
+
     await putByKey({
       PK,
       SK,
@@ -65,6 +66,7 @@ export const UserQueries = {
         ...input
       }
     });
+
     return UserQueries.fetchUserById(PK);
   },
   updateUser: async ({ id: userId, ...input }) => {
@@ -113,7 +115,7 @@ export const userObject = user => {
   return {
     jwt: jsonwebtoken.sign({ id: user.PK, email: user.email }, "JWTSECRET"),
     validPassword: password => bcrypt.compareSync(password, user.password),
-    teamId: user.GSI2SK,
+    teamId: user.GSI2PK,
     email: user.GSI1SK,
     ...user
   };

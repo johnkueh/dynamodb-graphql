@@ -1,8 +1,8 @@
 import * as yup from "yup";
 import capitalize from "lodash/capitalize";
-import { UserInputError } from "apollo-server-lambda";
 import moment from "moment-timezone";
 import { dynamodb } from "../lib/dynamodb-client";
+import ValidationErrors from "../lib/validation-errors";
 
 export const TableName = process.env.DYNAMODB_TABLE;
 export const client = dynamodb;
@@ -112,9 +112,7 @@ export const validate = (data, schema) => {
     inner.forEach(({ path, message }) => {
       errors[path] = capitalize(message);
     });
-    throw new UserInputError(name, {
-      errors
-    });
+    throw ValidationErrors(errors);
   }
 };
 

@@ -3,6 +3,7 @@ import { makeSchema } from "nexus";
 import { applyMiddleware } from "graphql-middleware";
 import jsonwebtoken from "jsonwebtoken";
 import * as types from "../schema";
+import { permissions } from "../permissions";
 import { Queries } from "../dynamodb/queries";
 
 const schema = applyMiddleware(
@@ -10,7 +11,8 @@ const schema = applyMiddleware(
     types,
     outputs: false,
     shouldGenerateArtifacts: false
-  })
+  }),
+  permissions
 );
 
 const userContext = async ({ event }) => {
