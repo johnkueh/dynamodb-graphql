@@ -18,16 +18,7 @@ Object {
 }
 `;
 
-exports[`Fetching user profile is not able to fetch user profile without credentials 1`] = `
-Object {
-  "code": "BAD_USER_INPUT",
-  "exception": Object {
-    "errors": Object {
-      "auth": "You are not authorized to perform this action",
-    },
-  },
-}
-`;
+exports[`Fetching user profile is not able to fetch user profile without credentials 1`] = `"{\\"http\\":{\\"headers\\":{}},\\"errors\\":[{\\"message\\":\\"ValidationError\\",\\"locations\\":[{\\"line\\":3,\\"column\\":9}],\\"path\\":[\\"me\\"],\\"extensions\\":{\\"code\\":\\"BAD_USER_INPUT\\",\\"exception\\":{\\"errors\\":{\\"auth\\":\\"You are not authorized to perform this action\\"}}}}],\\"data\\":null}"`;
 
 exports[`Logging in is able to login with correct credentials 1`] = `
 Object {
@@ -50,16 +41,7 @@ Object {
 }
 `;
 
-exports[`Logging in is not able to login with wrong credentials 1`] = `
-Object {
-  "code": "BAD_USER_INPUT",
-  "exception": Object {
-    "errors": Object {
-      "auth": "Please check your credentials and try again.",
-    },
-  },
-}
-`;
+exports[`Logging in is not able to login with wrong credentials 1`] = `"{\\"http\\":{\\"headers\\":{}},\\"errors\\":[{\\"message\\":\\"ValidationError\\",\\"locations\\":[{\\"line\\":3,\\"column\\":5}],\\"path\\":[\\"login\\"],\\"extensions\\":{\\"code\\":\\"BAD_USER_INPUT\\",\\"exception\\":{\\"errors\\":{\\"auth\\":\\"Please check your credentials and try again.\\"}}}}],\\"data\\":null}"`;
 
 exports[`Signing up is able to signup successfully 1`] = `
 Object {
@@ -87,29 +69,9 @@ Object {
 }
 `;
 
-exports[`Signing up is not able to signup with missing fields 1`] = `
-Object {
-  "code": "BAD_USER_INPUT",
-  "exception": Object {
-    "errors": Object {
-      "email": "Email must be a valid email",
-      "name": "Name must be at least 1 characters",
-      "password": "Password must be at least 6 characters",
-    },
-  },
-}
-`;
+exports[`Signing up is not able to signup with missing fields 1`] = `"{\\"http\\":{\\"headers\\":{}},\\"errors\\":[{\\"message\\":\\"ValidationError\\",\\"locations\\":[{\\"line\\":3,\\"column\\":5}],\\"path\\":[\\"signup\\"],\\"extensions\\":{\\"code\\":\\"BAD_USER_INPUT\\",\\"exception\\":{\\"errors\\":{\\"name\\":\\"Name must be at least 1 characters\\",\\"email\\":\\"Email must be a valid email\\",\\"password\\":\\"Password must be at least 6 characters\\"}}}}],\\"data\\":null}"`;
 
-exports[`Signing up is not able to signup with missing team name 1`] = `
-Object {
-  "code": "BAD_USER_INPUT",
-  "exception": Object {
-    "errors": Object {
-      "teamName": "Team name must be at least 1 characters",
-    },
-  },
-}
-`;
+exports[`Signing up is not able to signup with missing team name 1`] = `"{\\"http\\":{\\"headers\\":{}},\\"errors\\":[{\\"message\\":\\"ValidationError\\",\\"locations\\":[{\\"line\\":3,\\"column\\":5}],\\"path\\":[\\"signup\\"],\\"extensions\\":{\\"code\\":\\"BAD_USER_INPUT\\",\\"exception\\":{\\"errors\\":{\\"teamName\\":\\"Team name must be at least 1 characters\\"}}}}],\\"data\\":null}"`;
 
 exports[`Updating user profile can update with valid fields 1`] = `
 Object {

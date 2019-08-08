@@ -32,7 +32,7 @@ describe("Signing up", () => {
       }
     });
 
-    expect(res.errors[0].extensions).toMatchSnapshot();
+    expect(JSON.stringify(res)).toMatchSnapshot();
   });
 
   it("is not able to signup with missing team name", async () => {
@@ -48,25 +48,29 @@ describe("Signing up", () => {
       }
     });
 
-    expect(res.errors[0].extensions).toMatchSnapshot();
+    expect(JSON.stringify(res)).toMatchSnapshot();
   });
 
-  // it('is not able to signup with taken email', async () => {
-  //   const existingUser = await factory.create('user');
+  // it("is not able to signup with taken email", async () => {
+  //   const existingUser = await Queries.putUser({
+  //     name: "Old Mcdonald",
+  //     email: "old@mcdonald.com",
+  //     password: "happymeal"
+  //   });
 
   //   const res = await performQuery({
   //     query: SIGNUP,
   //     variables: {
   //       input: {
   //         email: existingUser.email,
-  //         name: 'Test User',
-  //         password: 'testpassword',
-  //         teamName: 'Test team'
+  //         name: "Test User",
+  //         password: "testpassword",
+  //         teamName: "Test team"
   //       }
   //     }
   //   });
 
-  //   expect(res.errors[0].extensions).toMatchSnapshot();
+  //   expect(JSON.stringify(res)).toMatchSnapshot();
   // });
 
   it("is able to signup successfully", async () => {
@@ -120,7 +124,7 @@ describe("Logging in", () => {
         }
       }
     });
-    expect(res.errors[0].extensions).toMatchSnapshot();
+    expect(JSON.stringify(res)).toMatchSnapshot();
   });
 
   it("is able to login with correct credentials", async () => {
@@ -172,7 +176,7 @@ describe("Fetching user profile", () => {
     `
     });
 
-    expect(res.errors[0].extensions).toMatchSnapshot();
+    expect(JSON.stringify(res)).toMatchSnapshot();
   });
 
   it("is able to fetch user profile with credentials", async () => {
@@ -221,7 +225,7 @@ describe("Updating user profile", () => {
   //     }
   //   });
 
-  //   expect(res.errors[0].extensions).toMatchSnapshot();
+  //   expect(JSON.stringify(res)).toMatchSnapshot();
   // });
 
   it("can update with valid fields", async () => {
@@ -280,6 +284,6 @@ describe("Updating user profile", () => {
   //       }
   //     }
   //   });
-  //   expect(res.errors[0].extensions).toMatchSnapshot();
+  //   expect(JSON.stringify(res)).toMatchSnapshot();
   // });
 });

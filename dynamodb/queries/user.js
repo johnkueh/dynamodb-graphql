@@ -42,7 +42,11 @@ export const UserQueries = {
       email: yup
         .string()
         .email()
-        .min(1),
+        .min(1)
+        .test("is-unique", "Email is taken", value => {
+          if (value == null) return true;
+          return true;
+        }),
       password: yup.string().min(6),
       tz: validateTimezone()
     });

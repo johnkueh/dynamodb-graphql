@@ -73,7 +73,7 @@ describe("Updating team", () => {
       }
     });
 
-    expect(res.errors[0].extensions).toMatchSnapshot();
+    expect(JSON.stringify(res)).toMatchSnapshot();
   });
 
   it("is able to update own team", async () => {
@@ -195,7 +195,7 @@ describe("Adding team users", () => {
   //     }
   //   });
 
-  //   expect(res.errors[0].extensions).toMatchSnapshot();
+  //   expect(JSON.stringify(res)).toMatchSnapshot();
   // });
 
   it("unable to add team member with missing fields", async () => {
@@ -210,7 +210,7 @@ describe("Adding team users", () => {
       }
     });
 
-    expect(res.errors[0].extensions).toMatchSnapshot();
+    expect(JSON.stringify(res)).toMatchSnapshot();
   });
 
   it("able to add team members", async () => {
@@ -269,7 +269,7 @@ describe("Removing team users", () => {
       }
     });
 
-    expect(res.errors[0].extensions).toMatchSnapshot();
+    expect(JSON.stringify(res)).toMatchSnapshot();
   });
 
   it("able to remove team members", async () => {
@@ -300,6 +300,6 @@ describe("Removing team users", () => {
       }
     });
 
-    expect(res.errors[0].extensions).toMatchSnapshot();
+    expect(JSON.stringify(res)).toMatchSnapshot();
   });
 });
