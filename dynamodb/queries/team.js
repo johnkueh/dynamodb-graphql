@@ -6,7 +6,7 @@ import {
   updateByKey,
   deleteByKey,
   TableName,
-  client as dynamodb
+  client as DocumentClient
 } from "../helpers";
 import { userObject } from "./user";
 
@@ -47,7 +47,7 @@ export const TeamQueries = {
       }
     };
 
-    const { Items } = await dynamodb.query(params).promise();
+    const { Items } = await DocumentClient.query(params).promise();
     return Items;
   },
   addUserToTeam: async ({ user, team }) => {
@@ -68,7 +68,7 @@ export const TeamQueries = {
       },
       ReturnValues: "ALL_NEW"
     };
-    const { Attributes } = await dynamodb.update(params).promise();
+    const { Attributes } = await DocumentClient.update(params).promise();
     user.teamId = team.id;
     return Attributes;
   },
@@ -82,7 +82,7 @@ export const TeamQueries = {
       UpdateExpression: "remove GSI2PK, GSI2SK",
       ReturnValues: "ALL_NEW"
     };
-    const { Attributes } = await dynamodb.update(params).promise();
+    const { Attributes } = await DocumentClient.update(params).promise();
     return userObject(Attributes);
   }
 };

@@ -1,3 +1,4 @@
+import "../support/globals";
 import { query as performQuery } from "../support/apollo-test-helper";
 import { Queries } from "../../dynamodb/queries";
 
@@ -51,27 +52,27 @@ describe("Signing up", () => {
     expect(JSON.stringify(res)).toMatchSnapshot();
   });
 
-  // it("is not able to signup with taken email", async () => {
-  //   const existingUser = await Queries.putUser({
-  //     name: "Old Mcdonald",
-  //     email: "old@mcdonald.com",
-  //     password: "happymeal"
-  //   });
+  it("is not able to signup with taken email", async () => {
+    const existingUser = await Queries.putUser({
+      name: "Old Mcdonald",
+      email: "old@mcdonald.com",
+      password: "happymeal"
+    });
 
-  //   const res = await performQuery({
-  //     query: SIGNUP,
-  //     variables: {
-  //       input: {
-  //         email: existingUser.email,
-  //         name: "Test User",
-  //         password: "testpassword",
-  //         teamName: "Test team"
-  //       }
-  //     }
-  //   });
+    const res = await performQuery({
+      query: SIGNUP,
+      variables: {
+        input: {
+          email: existingUser.email,
+          name: "Test User",
+          password: "testpassword",
+          teamName: "Test team"
+        }
+      }
+    });
 
-  //   expect(JSON.stringify(res)).toMatchSnapshot();
-  // });
+    expect(JSON.stringify(res)).toMatchSnapshot();
+  });
 
   it("is able to signup successfully", async () => {
     const res = await performQuery({

@@ -11,6 +11,7 @@ phases:
     commands:
       - serverless dynamodb install
       - yarn test
+      - yarn jest
   post_build:
     commands:
       - serverless deploy --stage prod

@@ -1,3 +1,4 @@
+import "../support/globals";
 import { query as performQuery } from "../support/apollo-test-helper";
 import { Queries } from "../../dynamodb/queries";
 

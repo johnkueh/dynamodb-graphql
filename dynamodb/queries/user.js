@@ -11,7 +11,7 @@ import {
   deleteByKey,
   objectToExpression,
   TableName,
-  client as dynamodb
+  client as DocumentClient
 } from "../helpers";
 import { TeamQueries } from "./team";
 
@@ -33,7 +33,7 @@ export const UserQueries = {
       IndexName: "GSI1",
       ...objectToExpression("KeyConditionExpression", input)
     };
-    const { Items } = await dynamodb.query(params).promise();
+    const { Items } = await DocumentClient.query(params).promise();
     return userObject(Items[0]);
   },
   putUser: async data => {
@@ -43,15 +43,16 @@ export const UserQueries = {
         .string()
         .email()
         .min(1)
-        .test("is-unique", "Email is taken", value => {
+        .test("is-unique", "Email is taken", async value => {
           if (value == null) return true;
-          return true;
+          const user = await UserQueries.fetchUserByEmail(value);
+          return user == null;
         }),
       password: yup.string().min(6),
       tz: validateTimezone()
     });
 
-    validate(data, schema);
+    await validate(data, schema);
 
     const { email, password = "", ...input } = data;
 
@@ -97,7 +98,7 @@ export const UserQueries = {
       teamName: yup.string().min(1, "Team name must be at least 1 characters")
     });
 
-    validate(data, schema);
+    await validate(data, schema);
 
     const { email, password = "", teamName, ...input } = data;
     const user = await UserQueries.putUser({

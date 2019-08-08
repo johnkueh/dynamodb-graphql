@@ -1,11 +1,11 @@
 import * as yup from "yup";
 import capitalize from "lodash/capitalize";
 import moment from "moment-timezone";
-import { dynamodb } from "../lib/dynamodb-client";
+import { DocumentClient } from "../lib/dynamodb-client";
 import ValidationErrors from "../lib/validation-errors";
 
 export const TableName = process.env.DYNAMODB_TABLE;
-export const client = dynamodb;
+export const client = DocumentClient;
 
 // DynamoDB Helpers
 export const fetchByKey = async ({ PK, SK }) => {
@@ -16,7 +16,7 @@ export const fetchByKey = async ({ PK, SK }) => {
       SK
     }
   };
-  const { Item: object } = await dynamodb.get(params).promise();
+  const { Item: object } = await DocumentClient.get(params).promise();
   if (object == null) return null;
   return object;
 };
@@ -31,7 +31,7 @@ export const putByKey = async ({ PK, SK, input }) => {
       ...input
     }
   };
-  return dynamodb.put(params).promise();
+  return DocumentClient.put(params).promise();
 };
 
 export const putAndFetchByKey = async ({ PK, SK, input }) => {
@@ -57,7 +57,7 @@ export const updateByKey = async ({ PK, SK, input }) => {
     ReturnValues: "ALL_NEW"
   };
 
-  const { Attributes: object } = await dynamodb.update(params).promise();
+  const { Attributes: object } = await DocumentClient.update(params).promise();
   return object;
 };
 
@@ -70,7 +70,7 @@ export const deleteByKey = async ({ PK, SK }) => {
     }
   };
 
-  return dynamodb.delete(params).promise();
+  return DocumentClient.delete(params).promise();
 };
 
 export const objectToExpression = (type, input) => {
@@ -103,9 +103,9 @@ export const objectToExpression = (type, input) => {
   };
 };
 
-export const validate = (data, schema) => {
+export const validate = async (data, schema) => {
   try {
-    schema.validateSync(data, { abortEarly: false });
+    await schema.validate(data, { abortEarly: false });
   } catch (error) {
     const { name, inner } = error;
     const errors = {};
