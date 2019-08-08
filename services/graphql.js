@@ -21,7 +21,7 @@ const userContext = async ({ event }) => {
     const jwt = Authorization.replace("Bearer ", "");
     const { id } = jsonwebtoken.verify(jwt, "JWTSECRET");
     if (id) {
-      user = await User.getById(id);
+      user = await User.fetchById(id);
     }
   }
 

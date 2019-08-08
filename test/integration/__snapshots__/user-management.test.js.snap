@@ -35,8 +35,8 @@ Object {
     "login": Object {
       "jwt": Any<String>,
       "user": Object {
-        "email": "john@doe.com",
-        "name": "John Doe",
+        "email": "new@doe.com",
+        "name": "New Doe",
       },
     },
   },

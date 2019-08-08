@@ -1,64 +1,12 @@
-import uuidv4 from "uuid/v4";
 import { dynamodb } from "../lib/dynamodb-client";
+import { generateCRUD, generatedUUID } from "../lib/dyna-helper";
 
-export const getById = async id => {
-  const params = {
-    TableName: process.env.DYNAMODB_TABLE,
-    Key: {
-      PK: id,
-      SK: "team"
-    }
-  };
-  const { Item: team } = await dynamodb.get(params).promise();
-
-  if (team == null) return null;
-
-  return team;
-};
-
-export const create = async ({ name }) => {
-  const id = uuidv4();
-  const params = {
-    TableName: process.env.DYNAMODB_TABLE,
-    Item: {
-      PK: id,
-      SK: "team",
-      id,
-      name
-    }
-  };
-  await dynamodb.put(params).promise();
-  const team = await getById(id);
-  return team;
-};
-
-export const update = async input => {
-  const updateKeys = Object.keys(input);
-  const updateExpressions = [];
-  const ExpressionAttributeNames = {};
-  const ExpressionAttributeValues = {};
-  updateKeys.forEach(key => {
-    updateExpressions.push(`#${key} = :${key}`);
-    ExpressionAttributeNames[`#${key}`] = key;
-    ExpressionAttributeValues[`:${key}`] = input[key];
-  });
-  const UpdateExpression = `set ${updateExpressions.join(", ")}`;
-
-  const params = {
-    TableName: process.env.DYNAMODB_TABLE,
-    Key: {
-      PK: input.id,
-      SK: "team"
-    },
-    UpdateExpression,
-    ExpressionAttributeNames,
-    ExpressionAttributeValues,
-    ReturnValues: "ALL_NEW"
-  };
-
-  const { Attributes: team } = await dynamodb.update(params).promise();
-  return team;
-};
+const crud = generateCRUD({
+  Key: {
+    PK: generatedUUID,
+    SK: "team"
+  }
+});
 
 export const getUsers = async id => {
   const params = {
@@ -98,9 +46,7 @@ export const addUser = async ({ teamId, userId }) => {
 };
 
 export default {
-  getById,
-  create,
-  update,
+  ...crud,
   getUsers,
   addUser
 };

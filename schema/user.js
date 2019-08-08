@@ -19,7 +19,7 @@ export const UserType = objectType({
     t.field("team", {
       type: "Team",
       resolve: async ({ teamId }) => {
-        return Team.getById(teamId);
+        return Team.fetchById(teamId);
       }
     });
   }
@@ -95,7 +95,7 @@ export const LoginMutation = mutationField("login", {
   },
   resolve: async (parent, { input }) => {
     const { email, password } = input;
-    const user = await User.getByEmail(email);
+    const user = await User.fetchByEmail(email);
     if (user && user.validPassword(password)) {
       return {
         jwt: user.jwt,

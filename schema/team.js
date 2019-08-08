@@ -26,7 +26,7 @@ export const TeamType = objectType({
 export const TeamQuery = queryField("team", {
   type: TeamType,
   resolve: async (parent, args, ctx) => {
-    return Team.getById(ctx.user.teamId);
+    return Team.fetchById(ctx.user.teamId);
   }
 });
 
