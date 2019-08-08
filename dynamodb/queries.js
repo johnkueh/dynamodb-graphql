@@ -1,6 +1,7 @@
 import uuidv4 from "uuid/v4";
 import bcrypt from "bcryptjs";
 import jsonwebtoken from "jsonwebtoken";
+import moment from "moment";
 import {
   fetchByKey,
   putByKey,
@@ -92,9 +93,8 @@ export const Queries = {
     const params = {
       TableName,
       IndexName: "GSI2",
-      KeyConditionExpression: "GSI2PK = :type and GSI2SK = :teamId",
+      KeyConditionExpression: "GSI2PK = :teamId",
       ExpressionAttributeValues: {
-        ":type": "teamUser",
         ":teamId": teamId
       }
     };
@@ -115,8 +115,8 @@ export const Queries = {
         "#GSI2SK": "GSI2SK"
       },
       ExpressionAttributeValues: {
-        ":GSI2PK": "teamUser",
-        ":GSI2SK": team.id
+        ":GSI2PK": team.id,
+        ":GSI2SK": moment().toISOString()
       },
       ReturnValues: "ALL_NEW"
     };

@@ -6,13 +6,13 @@ Object {
     "addTeamUser": Object {
       "users": Array [
         Object {
-          "email": "felicity@atkinson.com",
-          "name": "Felicity Atkinson",
+          "email": "rowan@atkinson.com",
+          "name": "Rowan Atkinson",
           "tz": "America/Los_Angeles",
         },
         Object {
-          "email": "rowan@atkinson.com",
-          "name": "Rowan Atkinson",
+          "email": "felicity@atkinson.com",
+          "name": "Felicity Atkinson",
           "tz": "America/Los_Angeles",
         },
       ],
