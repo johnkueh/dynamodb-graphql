@@ -1,0 +1,37 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Fetching team is able to fetch own team 1`] = `
+Object {
+  "data": Object {
+    "team": Object {
+      "id": Any<String>,
+      "name": "Cool team",
+    },
+  },
+  "errors": undefined,
+  "extensions": undefined,
+  "http": Object {
+    "headers": Headers {
+      Symbol(map): Object {},
+    },
+  },
+}
+`;
+
+exports[`Updating team is able to update own team 1`] = `
+Object {
+  "data": Object {
+    "updateTeam": Object {
+      "id": Any<String>,
+      "name": "Updated team",
+    },
+  },
+  "errors": undefined,
+  "extensions": undefined,
+  "http": Object {
+    "headers": Headers {
+      Symbol(map): Object {},
+    },
+  },
+}
+`;

@@ -7,9 +7,10 @@
   "author": "John Kueh",
   "license": "MIT",
   "scripts": {
-    "test": "jest --watch --runInBand",
-    "nexus": "NODE_ENV=development nodemon --exec babel-node nexus.js",
-    "start": "sls dynamodb start & sls offline"
+    "jest": "wait-on http://localhost:8000/shell && jest --runInBand",
+    "test:local": "NODE_ENV=test sls dynamodb start & yarn jest --watch",
+    "nexus": "NODE_ENV=dev nodemon --exec babel-node nexus.js",
+    "start": "NODE_ENV=dev sls dynamodb start & sls offline"
   },
   "dependencies": {
     "apollo-server-lambda": "^2.8.0",
@@ -25,7 +26,8 @@
     "pg": "^7.11.0",
     "serverless-dynamodb-local": "^0.2.38",
     "source-map-support": "^0.5.12",
-    "uuid": "^3.3.2"
+    "uuid": "^3.3.2",
+    "wait-on": "^3.3.0"
   },
   "devDependencies": {
     "@babel/core": "^7.2.2",
@@ -34,6 +36,7 @@
     "apollo-server-testing": "^2.8.1",
     "babel-jest": "^24.8.0",
     "babel-loader": "^8.0.6",
+    "dotenv": "^8.0.0",
     "eslint": "^5.6.0",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-config-prettier": "^4.0.0",

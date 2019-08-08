@@ -13,7 +13,7 @@ const schema = applyMiddleware(
   })
 );
 
-const context = async ({ event }) => {
+const userContext = async ({ event }) => {
   let user = null;
 
   const { Authorization } = event.headers;
@@ -30,12 +30,15 @@ const context = async ({ event }) => {
   };
 };
 
-export const server = new ApolloServer({
-  introspection: true,
-  playground: true,
-  schema,
-  context
-});
+export const makeServer = ({ context }) =>
+  new ApolloServer({
+    introspection: true,
+    playground: true,
+    schema,
+    context
+  });
+
+const server = makeServer({ context: userContext });
 
 export const handler = server.createHandler({
   cors: {

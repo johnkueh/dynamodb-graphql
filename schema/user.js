@@ -16,6 +16,12 @@ export const UserType = objectType({
     t.string("email");
     t.string("name");
     t.string("tz");
+    t.field("team", {
+      type: "Team",
+      resolve: async ({ teamId }) => {
+        return Team.getById(teamId);
+      }
+    });
   }
 });
 
@@ -52,6 +58,7 @@ export const SignupMutation = mutationField("signup", {
       userId: user.id,
       teamId: team.id
     });
+    user.teamId = team.id;
     return {
       jwt: user.jwt,
       user

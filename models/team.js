@@ -93,9 +93,6 @@ export const addUser = async ({ teamId, userId }) => {
     },
     ReturnValues: "ALL_NEW"
   };
-
-  console.log(params);
-
   const { Attributes: user } = await dynamodb.update(params).promise();
   return user;
 };
