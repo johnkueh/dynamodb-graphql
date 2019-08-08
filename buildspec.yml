@@ -4,12 +4,15 @@ phases:
     commands:
       - npm install --silent --no-progress -g yarn
       - yarn global add serverless --silent --no-progress
+      - yarn global add serverless-offline --silent --no-progress
+      - yarn global add serverless-webpack --silent --no-progress
+      - yarn global add serverless-dynamodb-local --silent --no-progress
+      - sls dynamodb install
   pre_build:
     commands:
       - yarn install --silent --no-progress
   build:
     commands:
-      - sls dynamodb install
       # - yarn test
   post_build:
     commands:
