@@ -27,7 +27,8 @@
     "pg": "^7.11.0",
     "source-map-support": "^0.5.12",
     "uuid": "^3.3.2",
-    "wait-on": "^3.3.0"
+    "wait-on": "^3.3.0",
+    "yup": "^0.27.0"
   },
   "devDependencies": {
     "@babel/core": "^7.2.2",
@@ -49,9 +50,9 @@
     "eslint-plugin-react": "^7.12.4",
     "nodemon": "^1.19.0",
     "prettier": "^1.16.4",
+    "serverless-dynamodb-local": "^0.2.38",
     "serverless-offline": "^5.8.0",
     "serverless-webpack": "^5.3.1",
-    "serverless-dynamodb-local": "^0.2.38",
     "supertest": "^4.0.2",
     "webpack": "^4.2.0",
     "webpack-node-externals": "^1.7.2"

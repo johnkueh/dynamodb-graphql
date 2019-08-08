@@ -2,15 +2,32 @@ import { query as performQuery } from "../support/apollo-test-helper";
 import { Queries } from "../../dynamodb/queries";
 
 describe("Signing up", () => {
-  // it('is not able to signup with missing fields', async () => {
+  const SIGNUP = `
+  mutation($input: SignupInput!) {
+    signup(input: $input) {
+      jwt
+      user {
+        id
+        name
+        email
+        team {
+          id
+          name
+        }
+      }
+    }
+  }
+  `;
+
+  // it("is not able to signup with missing fields", async () => {
   //   const res = await performQuery({
   //     query: SIGNUP,
   //     variables: {
   //       input: {
-  //         name: '',
-  //         email: 'dummy+user@testom',
-  //         password: 'pass',
-  //         teamName: 'Test team'
+  //         name: "",
+  //         email: "dummy+user@testom",
+  //         password: "pass",
+  //         teamName: "Test team"
   //       }
   //     }
   //   });
@@ -55,22 +72,7 @@ describe("Signing up", () => {
 
   it("is able to signup successfully", async () => {
     const res = await performQuery({
-      query: `
-      mutation($input: SignupInput!) {
-        signup(input: $input) {
-          jwt
-          user {
-            id
-            name
-            email
-            team {
-              id
-              name
-            }
-          }
-        }
-      }
-      `,
+      query: SIGNUP,
       variables: {
         input: {
           email: "john@doe.com",
