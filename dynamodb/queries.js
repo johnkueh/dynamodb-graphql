@@ -44,6 +44,7 @@ export const Queries = {
         GSI1SK: email,
         tz: "America/Los_Angeles",
         password: bcrypt.hashSync(password, 10),
+        email,
         ...input
       }
     });
@@ -94,7 +95,7 @@ export const Queries = {
       KeyConditionExpression: "GSI2PK = :type and GSI2SK = :teamId",
       ExpressionAttributeValues: {
         ":type": "teamUser",
-        ":teamId": id
+        ":teamId": teamId
       }
     };
 

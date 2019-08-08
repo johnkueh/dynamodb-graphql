@@ -6,6 +6,11 @@ Object {
     "team": Object {
       "id": Any<String>,
       "name": "Cool team",
+      "users": Array [
+        Object {
+          "id": Any<String>,
+        },
+      ],
     },
   },
   "errors": undefined,

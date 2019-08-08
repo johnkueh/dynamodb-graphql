@@ -9,6 +9,11 @@ describe("Fetching team", () => {
       team {
         id
         name
+        users {
+          id
+          email
+          name
+        }
       }
     }
   `;
@@ -34,7 +39,12 @@ describe("Fetching team", () => {
     expect(res).toMatchSnapshot({
       data: {
         team: {
-          id: expect.any(String)
+          id: expect.any(String),
+          users: [
+            {
+              id: expect.any(String)
+            }
+          ]
         }
       }
     });
