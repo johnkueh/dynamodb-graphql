@@ -33,7 +33,7 @@ export const Queries = {
     const { Items } = await dynamodb.query(params).promise();
     return userObject(Items[0]);
   },
-  putUser: async ({ email, password, ...input }) => {
+  putUser: async ({ email, password = "", ...input }) => {
     const PK = uuidv4();
     const SK = "user";
     await putByKey({
@@ -123,6 +123,19 @@ export const Queries = {
     const { Attributes } = await dynamodb.update(params).promise();
     user.teamId = team.id;
     return Attributes;
+  },
+  removeUserFromTeam: async ({ userId, teamId }) => {
+    const params = {
+      TableName,
+      Key: {
+        PK: userId,
+        SK: "user"
+      },
+      UpdateExpression: "remove GSI2PK, GSI2SK",
+      ReturnValues: "ALL_NEW"
+    };
+    const { Attributes } = await dynamodb.update(params).promise();
+    return userObject(Attributes);
   }
 };
 
