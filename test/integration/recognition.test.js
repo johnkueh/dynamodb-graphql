@@ -33,8 +33,6 @@ describe("viewing responses", () => {
   const query = `
     query($input: ResponsesFilterInput!) {
       responses(input: $input) {
-        submittedAt
-        sentAt
         feeling
         user {
           email

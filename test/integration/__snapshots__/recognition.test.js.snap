@@ -58,16 +58,12 @@ Object {
     "responses": Array [
       Object {
         "feeling": "HAPPY",
-        "sentAt": "2018-05-09T14:00:00.000Z",
-        "submittedAt": "2018-05-09T14:00:00.000Z",
         "user": Object {
           "email": "darth@vader.com",
         },
       },
       Object {
         "feeling": "HAPPY",
-        "sentAt": "2018-05-10T14:00:00.000Z",
-        "submittedAt": "2018-05-10T14:00:00.000Z",
         "user": Object {
           "email": "anakin@skywalker.com",
         },
@@ -92,16 +88,12 @@ Object {
     "responses": Array [
       Object {
         "feeling": "HAPPY",
-        "sentAt": "2018-05-09T14:00:00.000Z",
-        "submittedAt": "2018-05-09T14:00:00.000Z",
         "user": Object {
           "email": "darth@vader.com",
         },
       },
       Object {
         "feeling": "HAPPY",
-        "sentAt": "2018-05-10T14:00:00.000Z",
-        "submittedAt": "2018-05-10T14:00:00.000Z",
         "user": Object {
           "email": "anakin@skywalker.com",
         },
