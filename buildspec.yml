@@ -13,7 +13,7 @@ phases:
       - yarn test
   post_build:
     commands:
-      - serverless deploy --stage prod
+      # - serverless deploy --stage prod
 
 artifacts:
   files:

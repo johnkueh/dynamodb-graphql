@@ -8,7 +8,7 @@
   "license": "MIT",
   "scripts": {
     "jest": "wait-on http://localhost:8000/shell && jest --runInBand",
-    "test": "NODE_ENV=test sls dynamodb start & yarn jest",
+    "test": "sls dynamodb start & yarn jest",
     "test:local": "yarn test --watch",
     "nexus": "NODE_ENV=dev nodemon --exec babel-node nexus.js",
     "start": "NODE_ENV=dev sls dynamodb start & sls offline"
