@@ -31,7 +31,7 @@ plugins:
 
 custom:
   webpack:
-    webpackConfig: ./webpack.config.js
+    webpackConfig: webpack.config.js
     includeModules: true
   dynamodb:
     start:
@@ -44,8 +44,19 @@ package:
   individually: true
 
 functions:
+  responseEmailer:
+    handler: services/responseEmailer.handler
+    events:
+      - http:
+          path: emailer
+          method: post
+          cors: true
+      - http:
+          path: emailer
+          method: get
+          cors: true
   graphql:
-    handler: ./services/graphql.handler
+    handler: services/graphql.handler
     events:
       - http:
           path: graphql
