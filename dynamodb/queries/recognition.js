@@ -67,9 +67,9 @@ export const Queries = {
       const culture = await Queries.fetchCultureById(cultureId);
       return putByKey({
         PK: teamId,
-        SK: `teamCulture|${position}|${cultureId}`,
+        SK: `teamCulture|${position}|${culture.id}`,
         input: {
-          id: cultureId,
+          cultureId: culture.id,
           name: culture.name,
           position
         }
@@ -77,9 +77,9 @@ export const Queries = {
     },
     addAllToTeam: async ({ cultureIds, teamId }) => {
       await Promise.all(
-        cultureIds.map((id, idx) => {
+        cultureIds.map((cultureId, idx) => {
           return Queries.culture.addToTeam({
-            cultureId: id,
+            cultureId,
             teamId,
             position: idx + 1
           });
@@ -89,9 +89,9 @@ export const Queries = {
     removeAllFromTeam: async teamId => {
       const teamCultureValues = await Queries.culture.fetchForTeam(teamId);
       await Promise.all(
-        teamCultureValues.map(({ id, position }) => {
+        teamCultureValues.map(({ cultureId, position }) => {
           return Queries.culture.removeFromTeam({
-            cultureId: id,
+            cultureId,
             position,
             teamId
           });
