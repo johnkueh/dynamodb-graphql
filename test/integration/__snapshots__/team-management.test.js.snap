@@ -28,7 +28,31 @@ Object {
 }
 `;
 
+exports[`Adding team users unable to add team member with existing email 1`] = `"{\\"http\\":{\\"headers\\":{}},\\"errors\\":[{\\"message\\":\\"ValidationError\\",\\"locations\\":[{\\"line\\":3,\\"column\\":7}],\\"path\\":[\\"addTeamUser\\"],\\"extensions\\":{\\"code\\":\\"BAD_USER_INPUT\\",\\"exception\\":{\\"errors\\":{\\"email\\":\\"Email is taken\\"}}}}],\\"data\\":null}"`;
+
 exports[`Adding team users unable to add team member with missing fields 1`] = `"{\\"http\\":{\\"headers\\":{}},\\"errors\\":[{\\"message\\":\\"ValidationError\\",\\"locations\\":[{\\"line\\":3,\\"column\\":7}],\\"path\\":[\\"addTeamUser\\"],\\"extensions\\":{\\"code\\":\\"BAD_USER_INPUT\\",\\"exception\\":{\\"errors\\":{\\"name\\":\\"Name must be at least 1 characters\\",\\"email\\":\\"Email must be a valid email\\"}}}}],\\"data\\":null}"`;
+
+exports[`Fetching team is able to fetch cultureValues 1`] = `
+Object {
+  "data": Object {
+    "team": Object {
+      "cultureValues": Array [
+        Object {
+          "name": "Teamwork",
+        },
+      ],
+      "name": "Chinese Ancient",
+    },
+  },
+  "errors": undefined,
+  "extensions": undefined,
+  "http": Object {
+    "headers": Headers {
+      Symbol(map): Object {},
+    },
+  },
+}
+`;
 
 exports[`Fetching team is able to fetch own team 1`] = `
 Object {
@@ -213,3 +237,25 @@ Object {
   },
 }
 `;
+
+exports[`Updating team users able to update own team members 1`] = `
+Object {
+  "data": Object {
+    "updateTeamUser": Object {
+      "name": "Allen Key",
+      "tz": "Australia/Sydney",
+    },
+  },
+  "errors": undefined,
+  "extensions": undefined,
+  "http": Object {
+    "headers": Headers {
+      Symbol(map): Object {},
+    },
+  },
+}
+`;
+
+exports[`Updating team users not able to update not own team members 1`] = `"{\\"http\\":{\\"headers\\":{}},\\"errors\\":[{\\"message\\":\\"ValidationError\\",\\"locations\\":[{\\"line\\":3,\\"column\\":7}],\\"path\\":[\\"updateTeamUser\\"],\\"extensions\\":{\\"code\\":\\"BAD_USER_INPUT\\",\\"exception\\":{\\"errors\\":{\\"auth\\":\\"You are not authorized to perform this action\\"}}}}],\\"data\\":null}"`;
+
+exports[`Updating team users not able to update with invalid timezone 1`] = `"{\\"http\\":{\\"headers\\":{}},\\"errors\\":[{\\"message\\":\\"ValidationError\\",\\"locations\\":[{\\"line\\":3,\\"column\\":7}],\\"path\\":[\\"updateTeamUser\\"],\\"extensions\\":{\\"code\\":\\"BAD_USER_INPUT\\",\\"exception\\":{\\"errors\\":{\\"tz\\":\\"Timezone is not valid\\"}}}}],\\"data\\":null}"`;

@@ -20,7 +20,7 @@ export const permissions = shield(
       // resetPassword: allow,
       // updateResponse: responseExists, // No isAuthenticated so that able to update from clicking email without logging in
       updateTeam: and(isAuthenticated, canManageTeam),
-      // updateTeamUser: and(isAuthenticated, canManageTeamUser),
+      updateTeamUser: and(isAuthenticated, canManageTeamUser),
       removeTeamUser: and(isAuthenticated, canManageTeamUser, not(isMyself))
     }
   },

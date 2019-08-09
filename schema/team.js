@@ -107,6 +107,27 @@ export const AddTeamUserMutation = mutationField("addTeamUser", {
   }
 });
 
+export const UpdateTeamUserInputType = inputObjectType({
+  name: "UpdateTeamUserInput",
+  definition(t) {
+    t.string("id");
+    t.string("tz");
+  }
+});
+
+export const UpdateTeamUserMutation = mutationField("updateTeamUser", {
+  type: "User",
+  args: {
+    input: arg({
+      type: UpdateTeamUserInputType,
+      required: true
+    })
+  },
+  resolve: async (parent, { input }, ctx) => {
+    return Queries.updateUser(input);
+  }
+});
+
 export const RemoveTeamUserMutation = mutationField("removeTeamUser", {
   type: TeamType,
   args: {

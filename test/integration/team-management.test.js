@@ -37,6 +37,37 @@ describe("Fetching team", () => {
       }
     });
   });
+
+  it("is able to fetch cultureValues", async () => {
+    const culture = await Queries.putCulture({
+      name: "Teamwork",
+      position: 1
+    });
+    await Queries.culture.addToTeam({
+      teamId: user.team.id,
+      cultureId: culture.id,
+      position: 1
+    });
+
+    const res = await performQuery({
+      query: `
+      query {
+        team {
+          name
+          cultureValues {
+            name
+          }
+        }
+      }
+    `,
+      context: { user },
+      variables: {
+        id: user.team.id
+      }
+    });
+
+    expect(res).toMatchSnapshot();
+  });
 });
 
 describe("Updating team", () => {
@@ -339,21 +370,25 @@ describe("Adding team users", () => {
     });
   });
 
-  // it('unable to add team member with existing email', async () => {
-  //   await factory.create('user', { email: 'test@user.com' });
-  //   const res = await performQuery({
-  //     context: { user },
-  //     query,
-  //     variables: {
-  //       input: {
-  //         name: 'Dummy user',
-  //         email: 'test@user.com'
-  //       }
-  //     }
-  //   });
+  it("unable to add team member with existing email", async () => {
+    await Queries.putUser({
+      name: "Tester joe",
+      email: "test@user.com",
+      password: "password"
+    });
+    const res = await performQuery({
+      context: { user },
+      query,
+      variables: {
+        input: {
+          name: "Dummy user",
+          email: "test@user.com"
+        }
+      }
+    });
 
-  //   expect(JSON.stringify(res)).toMatchSnapshot();
-  // });
+    expect(JSON.stringify(res)).toMatchSnapshot();
+  });
 
   it("unable to add team member with missing fields", async () => {
     const res = await performQuery({
@@ -378,6 +413,77 @@ describe("Adding team users", () => {
         input: {
           name: "Felicity Atkinson",
           email: "felicity@atkinson.com"
+        }
+      }
+    });
+
+    expect(res).toMatchSnapshot();
+  });
+});
+
+describe("Updating team users", () => {
+  let user;
+  const query = `
+    mutation($input: UpdateTeamUserInput!) {
+      updateTeamUser(input: $input) {
+        name
+        tz
+      }
+    }
+  `;
+  beforeEach(async () => {
+    user = await Queries.createUserWithTeam({
+      name: "Allen Key",
+      email: "allen@key.com",
+      password: "password",
+      teamName: "New Zealand"
+    });
+  });
+
+  it("not able to update not own team members", async () => {
+    const otherUser = await Queries.createUserWithTeam({
+      name: "Nolan Key",
+      email: "nolan@key.com",
+      password: "password",
+      teamName: "Australia"
+    });
+    const res = await performQuery({
+      context: { user },
+      query,
+      variables: {
+        input: {
+          id: otherUser.id,
+          tz: "Australia/Sydney"
+        }
+      }
+    });
+
+    expect(JSON.stringify(res)).toMatchSnapshot();
+  });
+
+  it("not able to update with invalid timezone", async () => {
+    const res = await performQuery({
+      context: { user },
+      query,
+      variables: {
+        input: {
+          id: user.id,
+          tz: "Weird/Zone"
+        }
+      }
+    });
+
+    expect(JSON.stringify(res)).toMatchSnapshot();
+  });
+
+  it("able to update own team members", async () => {
+    const res = await performQuery({
+      context: { user },
+      query,
+      variables: {
+        input: {
+          id: user.id,
+          tz: "Australia/Sydney"
         }
       }
     });
