@@ -107,15 +107,58 @@ export const Queries = {
     }
   },
   responses: {
-    fetchCountsForAllCultures: async () => {},
-    fetchCountsForTeamCultures: async teamId => {},
-    fetchCountsForUserCultures: async userId => {},
-    fetchCountForCultureId: async cultureId => {},
+    // fetchCountsForAllCultures: async () => {},
+    // fetchCountsForTeamCultures: async teamId => {},
+    // fetchCountsForUserCultures: async userId => {},
+    // fetchCountForCultureId: async cultureId => {},
 
-    fetchCountsForAllEmojis: async () => {},
-    fetchCountsForTeamEmojis: async teamId => {},
-    fetchCountsForUserEmojis: async userId => {},
-    fetchCountForEmoji: async emoji => {}
+    // fetchCountsForAllEmojis: async () => {},
+    // fetchCountsForTeamEmojis: async teamId => {},
+    // fetchCountsForUserEmojis: async userId => {},
+    // fetchCountForEmoji: async emoji => {}
+    fetchById: async () => {},
+    put: async data => {
+      const { userId, teamId, sentAt, ...input } = data;
+      const PK = uuidv4();
+      const SK = `response`;
+      return putAndFetchByKey({
+        PK,
+        SK,
+        input: {
+          GSI1PK: `response_${teamId}`,
+          GSI1SK: sentAt,
+          GSI2PK: `response_${userId}`,
+          GSI2SK: sentAt,
+          sentAt,
+          userId,
+          teamId,
+          ...input
+        }
+      });
+    },
+    update: async () => {},
+    user: {
+      fetchByDateRange: async ({ userId, fromDate, toDate }) => {}
+    },
+    team: {
+      fetchByDateRange: async ({ teamId, fromDate, toDate }) => {
+        const params = {
+          TableName,
+          IndexName: "GSI1",
+          KeyConditionExpression:
+            "GSI1PK = :teamResponseId AND GSI1SK between :fromDate AND :toDate",
+          ExpressionAttributeValues: {
+            ":teamResponseId": `response_${teamId}`,
+            ":fromDate": fromDate,
+            ":toDate": toDate
+          }
+        };
+
+        const { Items } = await DocumentClient.query(params).promise();
+        // console.log(Items);
+        return Items;
+      }
+    }
   }
 };
 

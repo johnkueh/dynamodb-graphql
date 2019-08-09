@@ -24,3 +24,69 @@ Object {
   },
 }
 `;
+
+exports[`viewing responses is able to list responses belonging to team 1`] = `
+Object {
+  "data": Object {
+    "responses": Array [
+      Object {
+        "feeling": "HAPPY",
+        "sentAt": "2018-05-09T14:00:00.000Z",
+        "submittedAt": "2018-05-09T14:00:00.000Z",
+        "user": Object {
+          "email": "darth@vader.com",
+        },
+      },
+      Object {
+        "feeling": "HAPPY",
+        "sentAt": "2018-05-10T14:00:00.000Z",
+        "submittedAt": "2018-05-10T14:00:00.000Z",
+        "user": Object {
+          "email": "anakin@skywalker.com",
+        },
+      },
+    ],
+  },
+  "errors": undefined,
+  "extensions": undefined,
+  "http": Object {
+    "headers": Headers {
+      Symbol(map): Object {},
+    },
+  },
+}
+`;
+
+exports[`viewing responses not able to list responses if not logged in 1`] = `"{\\"http\\":{\\"headers\\":{}},\\"errors\\":[{\\"message\\":\\"ValidationError\\",\\"locations\\":[{\\"line\\":3,\\"column\\":7}],\\"path\\":[\\"responses\\"],\\"extensions\\":{\\"code\\":\\"BAD_USER_INPUT\\",\\"exception\\":{\\"errors\\":{\\"auth\\":\\"You are not authorized to perform this action\\"}}}}],\\"data\\":null}"`;
+
+exports[`viewing responses only show responses in the filtered dates 1`] = `
+Object {
+  "data": Object {
+    "responses": Array [
+      Object {
+        "feeling": "HAPPY",
+        "sentAt": "2018-05-09T14:00:00.000Z",
+        "submittedAt": "2018-05-09T14:00:00.000Z",
+        "user": Object {
+          "email": "darth@vader.com",
+        },
+      },
+      Object {
+        "feeling": "HAPPY",
+        "sentAt": "2018-05-10T14:00:00.000Z",
+        "submittedAt": "2018-05-10T14:00:00.000Z",
+        "user": Object {
+          "email": "anakin@skywalker.com",
+        },
+      },
+    ],
+  },
+  "errors": undefined,
+  "extensions": undefined,
+  "http": Object {
+    "headers": Headers {
+      Symbol(map): Object {},
+    },
+  },
+}
+`;

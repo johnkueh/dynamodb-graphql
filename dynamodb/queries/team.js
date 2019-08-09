@@ -70,6 +70,7 @@ export const TeamQueries = {
     };
     const { Attributes } = await DocumentClient.update(params).promise();
     user.teamId = team.id;
+    user.team = team;
     return Attributes;
   },
   removeUserFromTeam: async ({ userId, teamId }) => {
