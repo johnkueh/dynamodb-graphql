@@ -55,7 +55,7 @@ export const Queries = {
         },
         ExpressionAttributeValues: {
           ":PK": teamId,
-          ":SK": "culture|"
+          ":SK": "teamCulture|"
         }
       };
 
@@ -67,18 +67,42 @@ export const Queries = {
       const culture = await Queries.fetchCultureById(cultureId);
       return putByKey({
         PK: teamId,
-        SK: `culture|${position}`,
+        SK: `teamCulture|${position}|${cultureId}`,
         input: {
           id: cultureId,
-          name: culture.name
+          name: culture.name,
+          position
         }
       });
     },
+    addAllToTeam: async ({ cultureIds, teamId }) => {
+      await Promise.all(
+        cultureIds.map((id, idx) => {
+          return Queries.culture.addToTeam({
+            cultureId: id,
+            teamId,
+            position: idx + 1
+          });
+        })
+      );
+    },
+    removeAllFromTeam: async teamId => {
+      const teamCultureValues = await Queries.culture.fetchForTeam(teamId);
+      await Promise.all(
+        teamCultureValues.map(({ id, position }) => {
+          return Queries.culture.removeFromTeam({
+            cultureId: id,
+            position,
+            teamId
+          });
+        })
+      );
+    },
     removeFromTeam: async input => {
-      const { position, teamId } = input;
+      const { cultureId, teamId, position } = input;
       return deleteByKey({
         PK: teamId,
-        SK: `culture|${position}`
+        SK: `teamCulture|${position}|${cultureId}`
       });
     }
   },

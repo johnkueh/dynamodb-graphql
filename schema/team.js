@@ -72,34 +72,11 @@ export const UpdateTeamMutation = mutationField("updateTeam", {
     }
 
     if (cultureValueIds != null) {
-      const teamCultureValues = await Queries.culture.fetchForTeam(teamId);
-
-      const addIds = difference(
-        cultureValueIds,
-        teamCultureValues.map(({ id }) => id)
-      );
-      const removeIds = difference(
-        teamCultureValues.map(({ id }) => id),
-        cultureValueIds
-      );
-
-      const requests = [
-        ...addIds.map((id, idx) =>
-          Queries.culture.addToTeam({
-            cultureId: id,
-            teamId,
-            position: idx + 1
-          })
-        ),
-        ...removeIds.map(id =>
-          Queries.culture.removeFromTeam({
-            cultureId: id,
-            teamId
-          })
-        )
-      ];
-
-      await Promise.all(requests);
+      await Queries.culture.removeAllFromTeam(teamId);
+      await Queries.culture.addAllToTeam({
+        cultureIds: cultureValueIds,
+        teamId
+      });
     }
 
     return Queries.fetchTeamById(teamId);
