@@ -158,6 +158,102 @@ describe("Updating team", () => {
       }
     });
   });
+
+  describe("managing team cultureValues", () => {
+    const UPDATE_CULTURE_VALUES = `
+      mutation($input: UpdateTeamInput!) {
+        updateTeam(input: $input) {
+          name
+          cultureValues {
+            name
+          }
+        }
+      }
+    `;
+
+    it("is able to add team cultureValues", async () => {
+      const teamwork = await Queries.putCulture({
+        name: "Teamwork",
+        position: 1
+      });
+      const efficiency = await Queries.putCulture({
+        name: "Efficiency",
+        position: 2
+      });
+
+      const res = await performQuery({
+        context: { user },
+        query: UPDATE_CULTURE_VALUES,
+        variables: {
+          input: {
+            id: user.team.id,
+            cultureValueIds: [teamwork.id, efficiency.id]
+          }
+        }
+      });
+
+      expect(res).toMatchSnapshot();
+    });
+
+    it("is able to remove team cultureValues", async () => {
+      const teamwork = await Queries.putCulture({
+        name: "Teamwork",
+        position: 1
+      });
+      const efficiency = await Queries.putCulture({
+        name: "Efficiency",
+        position: 2
+      });
+      await Queries.culture.addToTeam({
+        teamId: user.team.id,
+        cultureId: teamwork.id,
+        position: 1
+      });
+      await Queries.culture.addToTeam({
+        teamId: user.team.id,
+        cultureId: efficiency.id,
+        position: 2
+      });
+
+      const res = await performQuery({
+        context: { user },
+        query: UPDATE_CULTURE_VALUES,
+        variables: {
+          input: {
+            id: user.team.id,
+            cultureValueIds: [teamwork.id]
+          }
+        }
+      });
+
+      expect(res).toMatchSnapshot();
+    });
+
+    it.skip("is able to remove all team cultureValues", async () => {
+      // const teamwork = await factory.create('cultureValue', { name: 'Teamwork' });
+      // const efficiency = await factory.create('cultureValue', { name: 'Efficiency' });
+      // await user.team.$relatedQuery('cultureValues').relate([teamwork.id, efficiency.id]);
+
+      const res = await performQuery({
+        context: { user },
+        query: UPDATE_CULTURE_VALUES,
+        variables: {
+          input: {
+            id: user.team.id,
+            cultureValueIds: []
+          }
+        }
+      });
+
+      expect(res).toMatchSnapshot({
+        data: {
+          updateTeam: {
+            id: expect.any(String)
+          }
+        }
+      });
+    });
+  });
 });
 
 describe("Listing team users", () => {

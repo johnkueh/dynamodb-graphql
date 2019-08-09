@@ -6,6 +6,7 @@ import {
   arg,
   stringArg
 } from "nexus";
+import { isEmpty, difference } from "lodash";
 import { Queries } from "../dynamodb/queries";
 
 export const TeamType = objectType({
@@ -20,6 +21,12 @@ export const TeamType = objectType({
       type: "User",
       resolve: async ({ id: teamId }) => {
         return Queries.fetchTeamUsers({ teamId });
+      }
+    });
+    t.list.field("cultureValues", {
+      type: "CultureValue",
+      resolve: async ({ id: teamId }) => {
+        return Queries.culture.fetchForTeam(teamId);
       }
     });
   }
@@ -40,6 +47,7 @@ export const UpdateTeamInputType = inputObjectType({
     t.string("emoji");
     t.boolean("moods");
     t.boolean("recognition");
+    t.list.string("cultureValueIds");
   }
 });
 
@@ -51,12 +59,50 @@ export const UpdateTeamMutation = mutationField("updateTeam", {
       required: true
     })
   },
-  resolve: async (parent, { input }, ctx) => {
-    const team = await Queries.updateTeam({
-      id: ctx.user.teamId,
-      ...input
-    });
-    return team;
+  resolve: async (
+    parent,
+    { input: anInput, input: { id: teamId, cultureValueIds, ...input } },
+    ctx
+  ) => {
+    if (!isEmpty(input)) {
+      await Queries.updateTeam({
+        id: teamId,
+        ...input
+      });
+    }
+
+    if (cultureValueIds != null) {
+      const teamCultureValues = await Queries.culture.fetchForTeam(teamId);
+
+      const addIds = difference(
+        cultureValueIds,
+        teamCultureValues.map(({ id }) => id)
+      );
+      const removeIds = difference(
+        teamCultureValues.map(({ id }) => id),
+        cultureValueIds
+      );
+
+      const requests = [
+        ...addIds.map((id, idx) =>
+          Queries.culture.addToTeam({
+            cultureId: id,
+            teamId,
+            position: idx + 1
+          })
+        ),
+        ...removeIds.map(id =>
+          Queries.culture.removeFromTeam({
+            cultureId: id,
+            teamId
+          })
+        )
+      ];
+
+      await Promise.all(requests);
+    }
+
+    return Queries.fetchTeamById(teamId);
   }
 });
 
@@ -77,16 +123,6 @@ export const AddTeamUserMutation = mutationField("addTeamUser", {
     })
   },
   resolve: async (parent, { input }, ctx) => {
-    // const { name, email } = input;
-    // const { user } = ctx;
-
-    // const team = await Team.query().findById(user.teamId);
-    // await team.$relatedQuery('users').insert({
-    //   name,
-    //   email
-    // });
-
-    // return user.$relatedQuery('team');
     const user = await Queries.putUser(input);
     const team = await Queries.fetchTeamById(ctx.user.teamId);
     await Queries.addUserToTeam({ user, team });
@@ -103,10 +139,7 @@ export const RemoveTeamUserMutation = mutationField("removeTeamUser", {
   },
   resolve: async (parent, { id }, ctx) => {
     const team = await Queries.fetchTeamById(ctx.user.teamId);
-    await Queries.removeUserFromTeam({
-      userId: id,
-      teamId: ctx.user.teamId
-    });
+    await Queries.removeUserFromTeam({ userId: id, teamId: ctx.user.teamId });
     return team;
   }
 });

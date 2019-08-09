@@ -1,0 +1,26 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Fetching culture values can fetch culture values without auth 1`] = `
+Object {
+  "data": Object {
+    "cultureValues": Array [
+      Object {
+        "name": "Teamwork",
+      },
+      Object {
+        "name": "Integrity",
+      },
+      Object {
+        "name": "Helpful",
+      },
+    ],
+  },
+  "errors": undefined,
+  "extensions": undefined,
+  "http": Object {
+    "headers": Headers {
+      Symbol(map): Object {},
+    },
+  },
+}
+`;

@@ -8,9 +8,9 @@ export const permissions = shield(
   {
     Query: {
       "*": isAuthenticated,
-      team: isAuthenticated
+      team: isAuthenticated,
       // responses: and(isAuthenticated),
-      // cultureValues: allow
+      cultureValues: allow
     },
     Mutation: {
       "*": isAuthenticated,

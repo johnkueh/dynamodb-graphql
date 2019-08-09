@@ -1,9 +1,11 @@
 import { UserQueries } from "./user";
 import { TeamQueries } from "./team";
+import { Queries as RecognitionQueries } from "./recognition";
 
 export const Queries = {
   ...UserQueries,
-  ...TeamQueries
+  ...TeamQueries,
+  ...RecognitionQueries
 };
 
 export default {

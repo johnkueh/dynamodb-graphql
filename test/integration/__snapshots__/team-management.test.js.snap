@@ -166,3 +166,53 @@ Object {
 `;
 
 exports[`Updating team is not able to update not own team 1`] = `"{\\"http\\":{\\"headers\\":{}},\\"errors\\":[{\\"message\\":\\"ValidationError\\",\\"locations\\":[{\\"line\\":3,\\"column\\":7}],\\"path\\":[\\"updateTeam\\"],\\"extensions\\":{\\"code\\":\\"BAD_USER_INPUT\\",\\"exception\\":{\\"errors\\":{\\"auth\\":\\"You are not authorized to perform this action\\"}}}}],\\"data\\":null}"`;
+
+exports[`Updating team managing team cultureValues is able to add team cultureValues 1`] = `
+Object {
+  "data": Object {
+    "updateTeam": Object {
+      "cultureValues": Array [
+        Object {
+          "name": "Teamwork",
+        },
+        Object {
+          "name": "Efficiency",
+        },
+      ],
+      "name": "Bamboo Forest",
+    },
+  },
+  "errors": undefined,
+  "extensions": undefined,
+  "http": Object {
+    "headers": Headers {
+      Symbol(map): Object {},
+    },
+  },
+}
+`;
+
+exports[`Updating team managing team cultureValues is able to remove team cultureValues 1`] = `
+Object {
+  "data": Object {
+    "updateTeam": Object {
+      "cultureValues": Array [
+        Object {
+          "name": "Teamwork",
+        },
+        Object {
+          "name": "Efficiency",
+        },
+      ],
+      "name": "Bamboo Forest",
+    },
+  },
+  "errors": undefined,
+  "extensions": undefined,
+  "http": Object {
+    "headers": Headers {
+      Symbol(map): Object {},
+    },
+  },
+}
+`;

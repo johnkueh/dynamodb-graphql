@@ -2,6 +2,7 @@ import { objectType, asNexusMethod } from "nexus";
 import { GraphQLDateTime } from "graphql-iso-date";
 import * as user from "./user";
 import * as team from "./team";
+import * as cultureValue from "./cultureValue";
 
 export const GQLDateTime = asNexusMethod(GraphQLDateTime, "dateTime");
 
@@ -14,5 +15,6 @@ export const DeletedType = objectType({
 
 export default {
   user,
-  team
+  team,
+  cultureValue
 };
