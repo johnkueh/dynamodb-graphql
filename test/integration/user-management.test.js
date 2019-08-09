@@ -205,6 +205,14 @@ describe("Fetching user profile", () => {
 
 describe("Updating user profile", () => {
   let user;
+  const UPDATE_USER = `
+  mutation($input: UpdateUserInput!) {
+    updateUser(input: $input) {
+      name
+      email
+    }
+  }
+  `;
   beforeEach(async () => {
     user = await Queries.putUser({
       name: "John Doe",
@@ -213,33 +221,26 @@ describe("Updating user profile", () => {
     });
   });
 
-  // it('fails to update with invalid fields', async () => {
-  //   const res = await performQuery({
-  //     context: { user },
-  //     query: UPDATE_USER,
-  //     variables: {
-  //       input: {
-  //         name: '',
-  //         email: 'hel@per',
-  //         password: 'abc'
-  //       }
-  //     }
-  //   });
+  it("fails to update with invalid fields", async () => {
+    const res = await performQuery({
+      context: { user },
+      query: UPDATE_USER,
+      variables: {
+        input: {
+          name: "",
+          email: "hel@per",
+          password: "abc"
+        }
+      }
+    });
 
-  //   expect(JSON.stringify(res)).toMatchSnapshot();
-  // });
+    expect(JSON.stringify(res)).toMatchSnapshot();
+  });
 
   it("can update with valid fields", async () => {
     const res = await performQuery({
       context: { user },
-      query: `
-      mutation($input: UpdateUserInput!) {
-        updateUser(input: $input) {
-          name
-          email
-        }
-      }
-      `,
+      query: UPDATE_USER,
       variables: {
         input: {
           name: "New Doe",
@@ -250,41 +251,39 @@ describe("Updating user profile", () => {
     expect(res).toMatchSnapshot();
   });
 
-  // it('can update password', async () => {
-  //   const res = await performQuery({
-  //     context: { user },
-  //     query: UPDATE_USER,
-  //     variables: {
-  //       input: {
-  //         password: 'newpassword'
-  //       }
-  //     }
-  //   });
-  //   expect(res.data).toEqual({
-  //     updateUser: {
-  //       email: user.email,
-  //       name: user.name
-  //     }
-  //   });
+  it("can update password", async () => {
+    const res = await performQuery({
+      context: { user },
+      query: UPDATE_USER,
+      variables: {
+        input: {
+          password: "newpassword"
+        }
+      }
+    });
+    expect(res).toMatchSnapshot();
 
-  //   const updatedUser = await User.query().findById(user.id);
-  //   expect(updatedUser.validPassword('newpassword')).toBe(true);
-  // });
+    const updatedUser = await Queries.fetchUserById(user.id);
+    expect(updatedUser.validPassword("newpassword")).toBe(true);
+  });
 
-  // it('fails to update with taken email', async () => {
-  //   await factory.create('user', {
-  //     email: 'taken@email.com'
-  //   });
+  it("fails to update with taken email", async () => {
+    await Queries.putUser({
+      name: "Death Toll",
+      email: "taken@email.com",
+      password: "deathishere",
+      teamName: "Kroll"
+    });
 
-  //   const res = await performQuery({
-  //     context: { user },
-  //     query: UPDATE_USER,
-  //     variables: {
-  //       input: {
-  //         email: 'taken@email.com'
-  //       }
-  //     }
-  //   });
-  //   expect(JSON.stringify(res)).toMatchSnapshot();
-  // });
+    const res = await performQuery({
+      context: { user },
+      query: UPDATE_USER,
+      variables: {
+        input: {
+          email: "taken@email.com"
+        }
+      }
+    });
+    expect(JSON.stringify(res)).toMatchSnapshot();
+  });
 });

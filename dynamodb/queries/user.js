@@ -37,22 +37,7 @@ export const UserQueries = {
     return userObject(Items[0]);
   },
   putUser: async data => {
-    const schema = yup.object().shape({
-      name: yup.string().min(1),
-      email: yup
-        .string()
-        .email()
-        .min(1)
-        .test("is-unique", "Email is taken", async value => {
-          if (value == null) return true;
-          const user = await UserQueries.fetchUserByEmail(value);
-          return user == null;
-        }),
-      password: yup.string().min(6),
-      tz: validateTimezone()
-    });
-
-    await validate(data, schema);
+    await validate(data, userInputSchema);
 
     const { email, password = "", ...input } = data;
 
@@ -74,12 +59,21 @@ export const UserQueries = {
 
     return UserQueries.fetchUserById(PK);
   },
-  updateUser: async ({ id: userId, ...input }) => {
-    const user = await updateByKey({
+  updateUser: async data => {
+    await validate(data, userInputSchema);
+
+    const { id: userId, password, ...input } = data;
+    const params = {
       PK: userId,
       SK: "user",
       input
-    });
+    };
+
+    if (password != null) {
+      params.input.password = bcrypt.hashSync(password, 10);
+    }
+
+    const user = await updateByKey(params);
     return userObject(user);
   },
   deleteUser: async ({ id: userId }) => {
@@ -125,6 +119,21 @@ export const userObject = user => {
     ...user
   };
 };
+
+const userInputSchema = yup.object().shape({
+  name: yup.string().min(1),
+  email: yup
+    .string()
+    .email()
+    .min(1)
+    .test("is-unique", "Email is taken", async value => {
+      if (value == null) return true;
+      const user = await UserQueries.fetchUserByEmail(value);
+      return user == null;
+    }),
+  password: yup.string().min(6),
+  tz: validateTimezone()
+});
 
 export default {
   UserQueries,

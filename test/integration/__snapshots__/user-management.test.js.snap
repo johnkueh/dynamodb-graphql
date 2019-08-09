@@ -75,6 +75,24 @@ exports[`Signing up is not able to signup with missing team name 1`] = `"{\\"htt
 
 exports[`Signing up is not able to signup with taken email 1`] = `"{\\"http\\":{\\"headers\\":{}},\\"errors\\":[{\\"message\\":\\"ValidationError\\",\\"locations\\":[{\\"line\\":3,\\"column\\":5}],\\"path\\":[\\"signup\\"],\\"extensions\\":{\\"code\\":\\"BAD_USER_INPUT\\",\\"exception\\":{\\"errors\\":{\\"email\\":\\"Email is taken\\"}}}}],\\"data\\":null}"`;
 
+exports[`Updating user profile can update password 1`] = `
+Object {
+  "data": Object {
+    "updateUser": Object {
+      "email": "john@doe.com",
+      "name": "John Doe",
+    },
+  },
+  "errors": undefined,
+  "extensions": undefined,
+  "http": Object {
+    "headers": Headers {
+      Symbol(map): Object {},
+    },
+  },
+}
+`;
+
 exports[`Updating user profile can update with valid fields 1`] = `
 Object {
   "data": Object {
@@ -92,3 +110,7 @@ Object {
   },
 }
 `;
+
+exports[`Updating user profile fails to update with invalid fields 1`] = `"{\\"http\\":{\\"headers\\":{}},\\"errors\\":[{\\"message\\":\\"ValidationError\\",\\"locations\\":[{\\"line\\":3,\\"column\\":5}],\\"path\\":[\\"updateUser\\"],\\"extensions\\":{\\"code\\":\\"BAD_USER_INPUT\\",\\"exception\\":{\\"errors\\":{\\"name\\":\\"Name must be at least 1 characters\\",\\"email\\":\\"Email must be a valid email\\",\\"password\\":\\"Password must be at least 6 characters\\"}}}}],\\"data\\":null}"`;
+
+exports[`Updating user profile fails to update with taken email 1`] = `"{\\"http\\":{\\"headers\\":{}},\\"errors\\":[{\\"message\\":\\"ValidationError\\",\\"locations\\":[{\\"line\\":3,\\"column\\":5}],\\"path\\":[\\"updateUser\\"],\\"extensions\\":{\\"code\\":\\"BAD_USER_INPUT\\",\\"exception\\":{\\"errors\\":{\\"email\\":\\"Email is taken\\"}}}}],\\"data\\":null}"`;
