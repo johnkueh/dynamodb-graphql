@@ -1,5 +1,5 @@
 import uuidv4 from "uuid/v4";
-import moment from "moment";
+import * as yup from "yup";
 import {
   fetchByKey,
   putByKey,
@@ -7,6 +7,7 @@ import {
   updateByKey,
   deleteByKey,
   TableName,
+  validate,
   client as DocumentClient
 } from "../helpers";
 
@@ -116,7 +117,12 @@ export const Queries = {
     // fetchCountsForTeamEmojis: async teamId => {},
     // fetchCountsForUserEmojis: async userId => {},
     // fetchCountForEmoji: async emoji => {}
-    fetchById: async () => {},
+    fetchById: async responseId => {
+      return fetchByKey({
+        PK: responseId,
+        SK: "response"
+      });
+    },
     put: async data => {
       const { userId, teamId, sentAt, ...input } = data;
       const PK = uuidv4();
@@ -136,7 +142,19 @@ export const Queries = {
         }
       });
     },
-    update: async () => {},
+    update: async ({ id: responseId, ...input }) => {
+      const schema = yup.object().shape({
+        feeling: yup.string().oneOf(["HAPPY", "NEUTRAL", "SAD"])
+      });
+
+      await validate(input, schema);
+
+      return updateByKey({
+        PK: responseId,
+        SK: "response",
+        input
+      });
+    },
     user: {
       fetchByDateRange: async ({ userId, fromDate, toDate }) => {}
     },

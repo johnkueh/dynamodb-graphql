@@ -112,6 +112,11 @@ export const userObject = user => {
   if (user == null) return null;
 
   return {
+    jwtWithOptions: options =>
+      jsonwebtoken.sign(
+        { id: user.PK, email: user.email, options },
+        "JWTSECRET"
+      ),
     jwt: jsonwebtoken.sign({ id: user.PK, email: user.email }, "JWTSECRET"),
     validPassword: password => bcrypt.compareSync(password, user.password),
     teamId: user.GSI2PK,

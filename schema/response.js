@@ -50,3 +50,46 @@ export const ResponsesQuery = queryField("responses", {
     });
   }
 });
+
+export const UpdateResponseInputType = inputObjectType({
+  name: "UpdateResponseInput",
+  definition(t) {
+    t.string("id");
+    t.string("feeling");
+  }
+});
+
+export const UpdateResponsePayloadType = objectType({
+  name: "UpdateResponsePayload",
+  definition(t) {
+    t.string("jwt");
+    t.field("response", {
+      type: "Response"
+    });
+  }
+});
+
+export const UpdateResponseMutation = mutationField("updateResponse", {
+  type: UpdateResponsePayloadType,
+  args: {
+    input: arg({
+      type: UpdateResponseInputType,
+      required: true
+    })
+  },
+  resolve: async (parent, { input }) => {
+    const response = await Queries.responses.update({
+      submittedAt: moment().toISOString(),
+      ...input
+    });
+    const user = await Queries.fetchUserById(response.userId);
+    const jwt = user.jwtWithOptions({
+      expiresIn: "1h" // We want this token to expire quickly
+    });
+
+    return {
+      jwt,
+      response
+    };
+  }
+});

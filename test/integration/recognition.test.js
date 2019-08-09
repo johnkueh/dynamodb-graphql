@@ -1,4 +1,5 @@
 import moment from "moment";
+import jsonwebtoken from "jsonwebtoken";
 import "../support/globals";
 import { query as performQuery } from "../support/apollo-test-helper";
 import { Queries } from "../../dynamodb/queries";
@@ -145,5 +146,116 @@ describe("viewing responses", () => {
     });
 
     expect(res).toMatchSnapshot();
+  });
+});
+
+describe("submitting responses", () => {
+  let user;
+  let response;
+  const query = `
+    mutation($input: UpdateResponseInput!) {
+      updateResponse(input: $input) {
+        response {
+          feeling
+          submittedAt
+        }
+        jwt
+      }
+    }
+  `;
+  beforeEach(async () => {
+    user = await Queries.createUserWithTeam({
+      name: "Darth Vader",
+      email: "darth@vader.com",
+      password: "password",
+      teamName: "Star Wars"
+    });
+    response = await Queries.responses.put({
+      sentAt: moment("2018-05-10").toISOString(),
+      userId: user.id,
+      teamId: user.teamId,
+      feeling: "HAPPY"
+    });
+  });
+
+  it("is able to update response without logged in", async () => {
+    expect(response.submittedAt).toBeUndefined();
+
+    const res = await performQuery({
+      query,
+      variables: {
+        input: {
+          id: response.id,
+          feeling: "HAPPY"
+        }
+      }
+    });
+
+    const decoded = jsonwebtoken.verify(
+      res.data.updateResponse.jwt,
+      "JWTSECRET"
+    );
+
+    expect(decoded).toEqual({
+      id: expect.any(String),
+      iat: expect.any(Number),
+      email: user.email,
+      options: {
+        expiresIn: "1h"
+      }
+    });
+
+    expect(res).toMatchSnapshot({
+      data: {
+        updateResponse: {
+          jwt: expect.any(String),
+          response: {
+            submittedAt: expect.any(String)
+          }
+        }
+      }
+    });
+  });
+
+  it("is not able to update response with invalid id", async () => {
+    const res = await performQuery({
+      query,
+      variables: {
+        input: {
+          id: "12312313",
+          feeling: "HAPPY"
+        }
+      }
+    });
+
+    expect(JSON.stringify(res)).toMatchSnapshot();
+  });
+
+  it("is not able to update response without feeling", async () => {
+    const res = await performQuery({
+      query,
+      variables: {
+        input: {
+          id: response.id,
+          feeling: ""
+        }
+      }
+    });
+
+    expect(JSON.stringify(res)).toMatchSnapshot();
+  });
+
+  it("is not able to update response with invalid feeling", async () => {
+    const res = await performQuery({
+      query,
+      variables: {
+        input: {
+          id: response.id,
+          feeling: "FU"
+        }
+      }
+    });
+
+    expect(JSON.stringify(res)).toMatchSnapshot();
   });
 });
