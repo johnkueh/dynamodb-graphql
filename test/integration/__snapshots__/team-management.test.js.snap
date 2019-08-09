@@ -127,4 +127,42 @@ Object {
 }
 `;
 
+exports[`Updating team is able to update team emoji 1`] = `
+Object {
+  "data": Object {
+    "updateTeam": Object {
+      "emoji": "🌮",
+      "id": Any<String>,
+      "name": "Bamboo Forest",
+    },
+  },
+  "errors": undefined,
+  "extensions": undefined,
+  "http": Object {
+    "headers": Headers {
+      Symbol(map): Object {},
+    },
+  },
+}
+`;
+
+exports[`Updating team is able to update team features 1`] = `
+Object {
+  "data": Object {
+    "updateTeam": Object {
+      "id": Any<String>,
+      "moods": false,
+      "recognition": false,
+    },
+  },
+  "errors": undefined,
+  "extensions": undefined,
+  "http": Object {
+    "headers": Headers {
+      Symbol(map): Object {},
+    },
+  },
+}
+`;
+
 exports[`Updating team is not able to update not own team 1`] = `"{\\"http\\":{\\"headers\\":{}},\\"errors\\":[{\\"message\\":\\"ValidationError\\",\\"locations\\":[{\\"line\\":3,\\"column\\":7}],\\"path\\":[\\"updateTeam\\"],\\"extensions\\":{\\"code\\":\\"BAD_USER_INPUT\\",\\"exception\\":{\\"errors\\":{\\"auth\\":\\"You are not authorized to perform this action\\"}}}}],\\"data\\":null}"`;

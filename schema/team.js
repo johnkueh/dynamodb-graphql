@@ -13,6 +13,9 @@ export const TeamType = objectType({
   definition(t) {
     t.id("id");
     t.string("name");
+    t.string("emoji");
+    t.boolean("moods");
+    t.boolean("recognition");
     t.list.field("users", {
       type: "User",
       resolve: async ({ id: teamId }) => {
@@ -34,6 +37,9 @@ export const UpdateTeamInputType = inputObjectType({
   definition(t) {
     t.string("id");
     t.string("name");
+    t.string("emoji");
+    t.boolean("moods");
+    t.boolean("recognition");
   }
 });
 

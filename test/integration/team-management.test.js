@@ -98,6 +98,66 @@ describe("Updating team", () => {
       }
     });
   });
+
+  it("is able to update team features", async () => {
+    const res = await performQuery({
+      context: { user },
+      query: `
+      mutation($input: UpdateTeamInput!) {
+        updateTeam(input: $input) {
+          id
+          moods
+          recognition
+        }
+      }
+    `,
+      variables: {
+        input: {
+          id: user.team.id,
+          moods: false,
+          recognition: false
+        }
+      }
+    });
+
+    expect(res).toMatchSnapshot({
+      data: {
+        updateTeam: {
+          id: expect.any(String)
+        }
+      }
+    });
+  });
+
+  it("is able to update team emoji", async () => {
+    const res = await performQuery({
+      context: { user },
+      query: `
+      mutation($input: UpdateTeamInput!) {
+        updateTeam(input: $input) {
+          id
+          name
+          emoji
+        }
+      }
+    `,
+      variables: {
+        input: {
+          id: user.team.id,
+          emoji: "🌮"
+        }
+      }
+    });
+
+    expect(res).toMatchSnapshot({
+      data: {
+        updateTeam: {
+          id: expect.any(String),
+          emoji: "🌮"
+        }
+      }
+    });
+  });
 });
 
 describe("Listing team users", () => {
