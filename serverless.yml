@@ -45,16 +45,9 @@ package:
 
 functions:
   responseEmailer:
-    handler: services/responseEmailer.handler
+    handler: services/response-emailer.handler
     events:
-      - http:
-          path: emailer
-          method: post
-          cors: true
-      - http:
-          path: emailer
-          method: get
-          cors: true
+      - stream: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}/stream/2019-08-10T01:40:23.262"
   graphql:
     handler: services/graphql.handler
     events:
