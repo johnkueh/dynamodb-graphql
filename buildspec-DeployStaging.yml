@@ -7,10 +7,9 @@ phases:
   pre_build:
     commands:
       - yarn install --silent --no-progress
-      - serverless dynamodb install >/dev/null
   build:
     commands:
-      - yarn test
+      - serverless deploy --stage staging
 
 artifacts:
   files:
