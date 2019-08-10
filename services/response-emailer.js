@@ -1,5 +1,9 @@
 export const handler = (event, context, callback) => {
-  console.log("Received Event...", event);
+  const { Records } = event;
+  Records.forEach(({ eventName, eventSource, dynamodb }) => {
+    console.log(eventName, eventSource, dynamodb);
+  });
+
   return callback(null, {
     statusCode: 200,
     body: "Successfully received events"

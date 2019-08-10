@@ -6,7 +6,7 @@ provider:
     lambda: true
   name: aws
   runtime: nodejs10.x
-  stage: ${env:NODE_ENV, 'dev'}
+  stage: ${opt:stage, env:NODE_ENV, 'dev'}
   environment:
     DYNAMODB_TABLE: ${self:service}-${self:provider.stage}
   iamRoleStatements:
@@ -15,8 +15,14 @@ provider:
         - dynamodb:GetItem
         - dynamodb:PutItem
         - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
         - dynamodb:Query
         - dynamodb:Scan
+        # New permissions needed for stream
+        - dynamodb:GetRecords
+        - dynamodb:GetShardIterator
+        - dynamodb:DescribeStream
+        - dynamodb:ListStreams
       Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
     - Effect: Allow
       Action:
@@ -47,7 +53,11 @@ functions:
   responseEmailer:
     handler: services/response-emailer.handler
     events:
-      - stream: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}/stream/2019-08-10T01:40:23.262"
+      - stream:
+          type: dynamodb
+          arn: { Fn::GetAtt: ["DynamoDBGraphql", StreamArn] }
+          batchSize: 1
+
   graphql:
     handler: services/graphql.handler
     events:
@@ -87,6 +97,8 @@ resources:
           ReadCapacityUnits: 5
           WriteCapacityUnits: 5
         TableName: ${self:provider.environment.DYNAMODB_TABLE}
+        StreamSpecification:
+          StreamViewType: NEW_AND_OLD_IMAGES
         GlobalSecondaryIndexes:
           - IndexName: GSI1
             KeySchema:

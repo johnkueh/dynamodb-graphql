@@ -131,9 +131,9 @@ export const Queries = {
         PK,
         SK,
         input: {
-          GSI1PK: `response_${teamId}`,
+          GSI1PK: `response|${teamId}`,
           GSI1SK: sentAt,
-          GSI2PK: `response_${userId}`,
+          GSI2PK: `response|${userId}`,
           GSI2SK: sentAt,
           sentAt,
           userId,
@@ -166,7 +166,7 @@ export const Queries = {
           KeyConditionExpression:
             "GSI1PK = :teamResponseId AND GSI1SK between :fromDate AND :toDate",
           ExpressionAttributeValues: {
-            ":teamResponseId": `response_${teamId}`,
+            ":teamResponseId": `response|${teamId}`,
             ":fromDate": fromDate,
             ":toDate": toDate
           }
