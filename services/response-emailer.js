@@ -17,32 +17,34 @@ const processRecord = async record => {
   const { eventName, eventSource, dynamodb } = record;
   if (eventName === "INSERT") {
     const record = AWS.DynamoDB.Converter.unmarshall(dynamodb.NewImage);
-    const { userId, teamId, PK } = record;
-    const user = await Queries.fetchUserById(userId);
-    const team = await Queries.fetchTeamById(teamId);
-    const params = {
-      Destination: {
-        ToAddresses: [user.email]
-      },
-      Message: {
-        Body: {
-          Html: {
+    const { userId, teamId, PK, SK } = record;
+    if (SK.includes("response")) {
+      const user = await Queries.fetchUserById(userId);
+      const team = await Queries.fetchTeamById(teamId);
+      const params = {
+        Destination: {
+          ToAddresses: [user.email]
+        },
+        Message: {
+          Body: {
+            Html: {
+              Charset: "UTF-8",
+              Data: `How was work at ${team.name} today? Rate your day`
+            }
+          },
+          Subject: {
             Charset: "UTF-8",
-            Data: `How was work at ${team.name} today? Rate your day`
+            Data: "[Test] How was work today?"
           }
         },
-        Subject: {
-          Charset: "UTF-8",
-          Data: "[Test] How was work today?"
-        }
-      },
-      Source: "Vibejar <support@vibejar.com>"
-    };
+        Source: "Vibejar <support@vibejar.com>"
+      };
 
-    await SES.sendEmail(params).promise();
-    await Queries.responses.update({
-      id: PK,
-      sentAt: moment().toISOString()
-    });
+      await SES.sendEmail(params).promise();
+      await Queries.responses.update({
+        id: PK,
+        sentAt: moment().toISOString()
+      });
+    }
   }
 };
