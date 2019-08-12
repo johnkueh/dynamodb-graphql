@@ -16,6 +16,9 @@ export const handler = async event => {
 const processRecord = async record => {
   const { eventName, eventSource, dynamodb } = record;
   if (eventName === "INSERT") {
+    if (process.env.NODE_ENV !== "test") {
+      console.log("INSERTed record: ", dynamodb.NewImage);
+    }
     const record = AWS.DynamoDB.Converter.unmarshall(dynamodb.NewImage);
     const { userId, teamId, PK, SK } = record;
     if (process.env.NODE_ENV !== "test") {
