@@ -26,7 +26,7 @@ export const TeamType = objectType({
     t.list.field("cultureValues", {
       type: "CultureValue",
       resolve: async ({ id: teamId }) => {
-        return Queries.culture.fetchForTeam(teamId);
+        return Queries.fetchCultureForTeam(teamId);
       }
     });
   }
@@ -72,8 +72,8 @@ export const UpdateTeamMutation = mutationField("updateTeam", {
     }
 
     if (cultureValueIds != null) {
-      await Queries.culture.removeAllFromTeam(teamId);
-      await Queries.culture.addAllToTeam({
+      await Queries.removeCulturesFromTeam(teamId);
+      await Queries.addCulturesToTeam({
         cultureIds: cultureValueIds,
         teamId
       });

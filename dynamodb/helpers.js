@@ -116,13 +116,14 @@ export const validate = async (data, schema) => {
   }
 };
 
-export const validateTimezone = () =>
-  yup.string().test("is-valid", "Timezone is not valid", value => {
+export const validateTimezone = () => {
+  return yup.string().test("is-valid", "Timezone is not valid", value => {
     // Dont run the test if value is undefined
     if (value == null) return true;
 
     return moment.tz.names().find(name => name === value);
   });
+};
 
 export default {
   fetchByKey,

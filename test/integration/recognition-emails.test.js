@@ -16,7 +16,7 @@ describe("Creating new response survey", () => {
       teamName: "Star Wars"
     });
 
-    response = await Queries.responses.put({
+    response = await Queries.putResponse({
       submittedAt: moment("2018-05-10").toISOString(),
       userId: user.id,
       teamId: user.teamId,
@@ -33,7 +33,7 @@ describe("Creating new response survey", () => {
     expect(response.sentAt).toBeUndefined();
 
     await handler(dbbStreamForInsertedResponse(response));
-    const updatedResponse = await Queries.responses.fetchById(response.id);
+    const updatedResponse = await Queries.fetchResponseById(response.id);
 
     expect(spy).toHaveBeenCalledWith({
       Destination: {

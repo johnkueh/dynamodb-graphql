@@ -49,7 +49,7 @@ describe("viewing responses", () => {
       teamName: "Star Wars"
     });
 
-    await Queries.responses.put({
+    await Queries.putResponse({
       sentAt: moment("2018-05-10").toISOString(),
       submittedAt: moment("2018-05-10").toISOString(),
       userId: user.id,
@@ -68,7 +68,7 @@ describe("viewing responses", () => {
       team: user.team
     });
 
-    await Queries.responses.put({
+    await Queries.putResponse({
       sentAt: moment("2018-05-11").toISOString(),
       submittedAt: moment("2018-05-11").toISOString(),
       userId: user2.id,
@@ -100,7 +100,7 @@ describe("viewing responses", () => {
       teamName: "Disney"
     });
 
-    await Queries.responses.put({
+    await Queries.putResponse({
       sentAt: moment("2018-05-10").toISOString(),
       submittedAt: moment("2018-05-10").toISOString(),
       userId: otherTeamUser.id,
@@ -124,7 +124,7 @@ describe("viewing responses", () => {
 
   it("only show responses in the filtered dates", async () => {
     // This response entry shouldnt appear because its not in the filtered month
-    await Queries.responses.put({
+    await Queries.putResponse({
       sentAt: moment("2018-01-10").toISOString(),
       submittedAt: moment("2018-01-10").toISOString(),
       userId: user.id,
@@ -168,7 +168,7 @@ describe("submitting responses", () => {
       password: "password",
       teamName: "Star Wars"
     });
-    response = await Queries.responses.put({
+    response = await Queries.putResponse({
       sentAt: moment("2018-05-10").toISOString(),
       userId: user.id,
       teamId: user.teamId,

@@ -1,11 +1,13 @@
-import { UserQueries } from "./user";
-import { TeamQueries } from "./team";
-import { Queries as RecognitionQueries } from "./recognition";
+import * as User from "./user";
+import * as Team from "./team";
+import * as Culture from "./culture";
+import * as Response from "./response";
 
 export const Queries = {
-  ...UserQueries,
-  ...TeamQueries,
-  ...RecognitionQueries
+  ...User,
+  ...Team,
+  ...Culture,
+  ...Response
 };
 
 export default {

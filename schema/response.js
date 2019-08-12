@@ -43,7 +43,7 @@ export const ResponsesQuery = queryField("responses", {
   },
   resolve: async (parent, args, ctx) => {
     const { from, to } = args.input;
-    return Queries.responses.team.fetchByDateRange({
+    return Queries.fetchResponsesForTeamByDateRange({
       teamId: ctx.user.teamId,
       fromDate: from,
       toDate: to
@@ -78,7 +78,7 @@ export const UpdateResponseMutation = mutationField("updateResponse", {
     })
   },
   resolve: async (parent, { input }) => {
-    const response = await Queries.responses.update({
+    const response = await Queries.updateResponse({
       submittedAt: moment().toISOString(),
       ...input
     });

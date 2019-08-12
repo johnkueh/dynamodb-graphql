@@ -43,7 +43,7 @@ describe("Fetching team", () => {
       name: "Teamwork",
       position: 1
     });
-    await Queries.culture.addToTeam({
+    await Queries.addCultureToTeam({
       teamId: user.team.id,
       cultureId: culture.id,
       position: 1
@@ -235,12 +235,12 @@ describe("Updating team", () => {
         name: "Efficiency",
         position: 2
       });
-      await Queries.culture.addToTeam({
+      await Queries.addCultureToTeam({
         teamId: user.team.id,
         cultureId: teamwork.id,
         position: 1
       });
-      await Queries.culture.addToTeam({
+      await Queries.addCultureToTeam({
         teamId: user.team.id,
         cultureId: efficiency.id,
         position: 2

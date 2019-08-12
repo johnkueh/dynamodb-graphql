@@ -41,7 +41,7 @@ const processRecord = async record => {
       };
 
       await SES.sendEmail(params).promise();
-      await Queries.responses.update({
+      await Queries.updateResponse({
         id: PK,
         sentAt: moment().toISOString()
       });
