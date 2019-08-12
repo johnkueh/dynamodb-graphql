@@ -15,45 +15,38 @@ export const handler = async event => {
 
 const processRecord = async record => {
   const { eventName, eventSource, dynamodb } = record;
-  if (eventName === "INSERT") {
-    if (process.env.NODE_ENV !== "test") {
-      console.log("INSERTed record: ", dynamodb.NewImage);
-    }
-    const record = AWS.DynamoDB.Converter.unmarshall(dynamodb.NewImage);
-    const { userId, teamId, PK, SK } = record;
-    if (process.env.NODE_ENV !== "test") {
-      console.log("Processing record: ", record);
-    }
-    if (SK.includes("response")) {
-      const user = await Queries.fetchUserById(userId);
-      const team = await Queries.fetchTeamById(teamId);
-      const params = {
-        Destination: {
-          ToAddresses: [user.email]
-        },
-        Message: {
-          Body: {
-            Html: {
-              Charset: "UTF-8",
-              Data: `How was work at ${team.name} today? Rate your day`
-            }
-          },
-          Subject: {
-            Charset: "UTF-8",
-            Data: "[Test] How was work today?"
-          }
-        },
-        Source: "Vibejar <support@vibejar.com>"
-      };
+  const { userId, teamId, PK, SK } = AWS.DynamoDB.Converter.unmarshall(
+    dynamodb.NewImage
+  );
 
-      await SES.sendEmail(params).promise();
-      if (process.env.NODE_ENV !== "test") {
-        console.log("Sent email to: ", user.email);
+  if (eventName !== "INSERT") return;
+  if (!userId || !teamId || !PK || !SK) return;
+  if (!SK.includes("response")) return;
+
+  const user = await Queries.fetchUserById(userId);
+  const team = await Queries.fetchTeamById(teamId);
+  const params = {
+    Destination: {
+      ToAddresses: [user.email]
+    },
+    Message: {
+      Body: {
+        Html: {
+          Charset: "UTF-8",
+          Data: `How was work at ${team.name} today? Rate your day`
+        }
+      },
+      Subject: {
+        Charset: "UTF-8",
+        Data: "[Test] How was work today?"
       }
-      await Queries.updateResponse({
-        id: PK,
-        sentAt: moment().toISOString()
-      });
-    }
-  }
+    },
+    Source: "Vibejar <support@vibejar.com>"
+  };
+
+  await SES.sendEmail(params).promise();
+  await Queries.updateResponse({
+    id: PK,
+    sentAt: moment().toISOString()
+  });
 };
