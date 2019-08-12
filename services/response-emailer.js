@@ -18,6 +18,9 @@ const processRecord = async record => {
   if (eventName === "INSERT") {
     const record = AWS.DynamoDB.Converter.unmarshall(dynamodb.NewImage);
     const { userId, teamId, PK, SK } = record;
+    if (process.env.NODE_ENV !== "test") {
+      console.log("Processing record: ", record);
+    }
     if (SK.includes("response")) {
       const user = await Queries.fetchUserById(userId);
       const team = await Queries.fetchTeamById(teamId);
@@ -41,6 +44,9 @@ const processRecord = async record => {
       };
 
       await SES.sendEmail(params).promise();
+      if (process.env.NODE_ENV !== "test") {
+        console.log("Sent email to: ", user.email);
+      }
       await Queries.updateResponse({
         id: PK,
         sentAt: moment().toISOString()
