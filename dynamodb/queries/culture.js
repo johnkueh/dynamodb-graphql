@@ -1,44 +1,48 @@
 import uuidv4 from "uuid/v4";
-import * as yup from "yup";
 import {
-  fetchByKey,
-  putByKey,
-  putAndFetchByKey,
-  updateByKey,
-  deleteByKey,
   TableName,
-  validate,
+  makeKeyConditionExpression,
   client as DocumentClient
 } from "../helpers";
 
+export const fetchCultureById = async cultureId => {
+  const params = {
+    TableName,
+    Key: {
+      PK: cultureId,
+      SK: "culture"
+    }
+  };
+  const { Item: object } = await DocumentClient.get(params).promise();
+  return object;
+};
+
 export const putCulture = async input => {
   const { name, position } = input;
-  const PK = uuidv4();
+  const uuid = uuidv4();
   const SK = "culture";
-  return putAndFetchByKey({
-    PK,
-    SK,
-    input: {
+
+  const params = {
+    TableName,
+    Item: {
+      PK: uuid,
+      SK,
+      id: uuid,
       GSI1PK: "culture",
       GSI1SK: `${position}|${name}|`,
       ...input
     }
-  });
-};
-export const fetchCultureById = async cultureId => {
-  return fetchByKey({
-    PK: cultureId,
-    SK: "culture"
-  });
+  };
+  await DocumentClient.put(params).promise();
+  return fetchCultureById(uuid);
 };
 export const fetchCultures = async data => {
   const params = {
     TableName,
     IndexName: "GSI1",
-    KeyConditionExpression: "GSI1PK = :type",
-    ExpressionAttributeValues: {
-      ":type": "culture"
-    }
+    ...makeKeyConditionExpression({
+      GSI1PK: "culture"
+    })
   };
 
   const { Items } = await DocumentClient.query(params).promise();
@@ -64,15 +68,19 @@ export const fetchCultureForTeam = async teamId => {
 export const addCultureToTeam = async input => {
   const { cultureId, teamId, position } = input;
   const culture = await fetchCultureById(cultureId);
-  return putByKey({
-    PK: teamId,
-    SK: `teamCulture|${position}|${culture.id}`,
-    input: {
-      cultureId: culture.id,
+  const PK = teamId;
+
+  const params = {
+    TableName,
+    Item: {
+      PK,
+      SK: `teamCulture|${position}|${culture.id}`,
+      id: PK,
       name: culture.name,
-      position
+      ...input
     }
-  });
+  };
+  return DocumentClient.put(params).promise();
 };
 export const addCulturesToTeam = async ({ cultureIds, teamId }) => {
   await Promise.all(
@@ -87,10 +95,15 @@ export const addCulturesToTeam = async ({ cultureIds, teamId }) => {
 };
 export const removeCultureFromTeam = async input => {
   const { cultureId, teamId, position } = input;
-  return deleteByKey({
-    PK: teamId,
-    SK: `teamCulture|${position}|${cultureId}`
-  });
+  const params = {
+    TableName,
+    Key: {
+      PK: teamId,
+      SK: `teamCulture|${position}|${cultureId}`
+    }
+  };
+
+  return DocumentClient.delete(params).promise();
 };
 export const removeCulturesFromTeam = async teamId => {
   const teamCultureValues = await fetchCultureForTeam(teamId);

@@ -2,37 +2,39 @@ import uuidv4 from "uuid/v4";
 import bcrypt from "bcryptjs";
 import jsonwebtoken from "jsonwebtoken";
 import * as yup from "yup";
-import { validate, validateTimezone } from "../helpers";
+import { validate, validateTimezone } from "../../lib/validate";
 import {
-  fetchByKey,
-  putByKey,
-  updateByKey,
-  deleteByKey,
-  objectToExpression,
+  makeUpdateExpression,
+  makeKeyConditionExpression,
   TableName,
   client as DocumentClient
 } from "../helpers";
 import * as Team from "./team";
 
 export const fetchUserById = async userId => {
-  const user = await fetchByKey({
-    PK: userId,
-    SK: "user"
-  });
+  const params = {
+    TableName,
+    Key: {
+      PK: userId,
+      SK: "user"
+    }
+  };
+  const { Item: user } = await DocumentClient.get(params).promise();
   return userObject(user);
 };
 export const fetchUserByEmail = async email => {
-  const input = {
-    GSI1PK: "user",
-    GSI1SK: email
-  };
   const params = {
     TableName,
     IndexName: "GSI1",
-    ...objectToExpression("KeyConditionExpression", input)
+    ...makeKeyConditionExpression({
+      GSI1PK: "user",
+      GSI1SK: email
+    })
   };
-  const { Items } = await DocumentClient.query(params).promise();
-  return userObject(Items[0]);
+  const {
+    Items: [user]
+  } = await DocumentClient.query(params).promise();
+  return userObject(user);
 };
 export const putUser = async data => {
   await validate(data, userInputSchema);
@@ -42,10 +44,12 @@ export const putUser = async data => {
   const PK = uuidv4();
   const SK = "user";
 
-  await putByKey({
-    PK,
-    SK,
-    input: {
+  const params = {
+    TableName,
+    Item: {
+      PK,
+      SK,
+      id: PK,
       GSI1PK: "user",
       GSI1SK: email,
       tz: "America/Los_Angeles",
@@ -53,30 +57,43 @@ export const putUser = async data => {
       email,
       ...input
     }
-  });
+  };
 
+  await DocumentClient.put(params).promise();
   return fetchUserById(PK);
 };
 export const updateUser = async data => {
   await validate(data, userInputSchema);
 
   const { id: userId, password, ...input } = data;
-  const params = {
-    PK: userId,
-    SK: "user",
-    input
-  };
 
   if (password != null) {
-    params.input.password = bcrypt.hashSync(password, 10);
+    input.password = bcrypt.hashSync(password, 10);
   }
 
-  const user = await updateByKey(params);
+  const params = {
+    TableName,
+    Key: {
+      PK: userId,
+      SK: "user"
+    },
+    ...makeUpdateExpression(input),
+    ReturnValues: "ALL_NEW"
+  };
+
+  const { Attributes: user } = await DocumentClient.update(params).promise();
   return userObject(user);
 };
 export const deleteUser = async ({ id: userId }) => {
-  await deleteByKey(userId);
-  return { id: userId };
+  const params = {
+    TableName,
+    Key: {
+      PK: userId,
+      SK: "user"
+    }
+  };
+
+  return DocumentClient.delete(params).promise();
 };
 export const createUserWithTeam = async data => {
   const schema = yup.object().shape({

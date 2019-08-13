@@ -1,40 +1,45 @@
 import uuidv4 from "uuid/v4";
 import * as yup from "yup";
+import { validate } from "../../lib/validate";
 import {
-  fetchByKey,
-  putByKey,
-  putAndFetchByKey,
-  updateByKey,
-  deleteByKey,
   TableName,
-  validate,
+  makeUpdateExpression,
   client as DocumentClient
 } from "../helpers";
 
 export const fetchResponseById = async responseId => {
-  return fetchByKey({
-    PK: responseId,
-    SK: "response"
-  });
+  const params = {
+    TableName,
+    Key: {
+      PK: responseId,
+      SK: "response"
+    }
+  };
+  const { Item: object } = await DocumentClient.get(params).promise();
+  return object;
 };
 export const putResponse = async data => {
   const { userId, teamId, sentAt, ...input } = data;
   const PK = uuidv4();
-  const SK = `response`;
-  return putAndFetchByKey({
-    PK,
-    SK,
-    input: {
-      GSI1PK: `response|${teamId}`,
+  const SK = "response";
+  const params = {
+    TableName,
+    Item: {
+      PK,
+      SK,
+      id: PK,
+      GSI1PK: `${SK}|${teamId}`,
       GSI1SK: sentAt,
-      GSI2PK: `response|${userId}`,
+      GSI2PK: `${SK}|${userId}`,
       GSI2SK: sentAt,
       sentAt,
       userId,
       teamId,
       ...input
     }
-  });
+  };
+  await DocumentClient.put(params).promise();
+  return fetchResponseById(PK);
 };
 export const updateResponse = async ({ id: responseId, ...input }) => {
   const schema = yup.object().shape({
@@ -43,11 +48,18 @@ export const updateResponse = async ({ id: responseId, ...input }) => {
 
   await validate(input, schema);
 
-  return updateByKey({
-    PK: responseId,
-    SK: "response",
-    input
-  });
+  const params = {
+    TableName,
+    Key: {
+      PK: responseId,
+      SK: "response"
+    },
+    ...makeUpdateExpression(input),
+    ReturnValues: "ALL_NEW"
+  };
+
+  const { Attributes: object } = await DocumentClient.update(params).promise();
+  return object;
 };
 export const fetchResponsesForUserByDateRange = async ({
   userId,

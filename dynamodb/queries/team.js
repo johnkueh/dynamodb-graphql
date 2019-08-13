@@ -1,49 +1,71 @@
 import uuidv4 from "uuid/v4";
 import moment from "moment";
 import {
-  fetchByKey,
-  putAndFetchByKey,
-  updateByKey,
-  deleteByKey,
+  makeUpdateExpression,
+  makeKeyConditionExpression,
   TableName,
   client as DocumentClient
 } from "../helpers";
 import { userObject } from "./user";
 
 export const fetchTeamById = async teamId => {
-  return fetchByKey({
-    PK: teamId,
-    SK: "team"
-  });
+  const params = {
+    TableName,
+    Key: {
+      PK: teamId,
+      SK: "team"
+    }
+  };
+  const { Item: object } = await DocumentClient.get(params).promise();
+  return object;
 };
 export const putTeam = async input => {
-  const PK = uuidv4();
-  const SK = "team";
-  return putAndFetchByKey({
-    PK,
-    SK,
-    input
-  });
+  const uuid = uuidv4();
+  const params = {
+    TableName,
+    Item: {
+      PK: uuid,
+      SK: "team",
+      id: uuid,
+      ...input
+    }
+  };
+
+  await DocumentClient.put(params).promise();
+  return fetchTeamById(uuid);
 };
-export const updateTeam = ({ id: teamId, ...input }) => {
-  return updateByKey({
-    PK: teamId,
-    SK: "team",
-    input
-  });
+export const updateTeam = async ({ id: teamId, ...input }) => {
+  const params = {
+    TableName,
+    Key: {
+      PK: teamId,
+      SK: "team"
+    },
+    ...makeUpdateExpression(input),
+    ReturnValues: "ALL_NEW"
+  };
+
+  const { Attributes: object } = await DocumentClient.update(params).promise();
+  return object;
 };
 export const deleteTeam = async ({ id: teamId }) => {
-  await deleteByKey(teamId);
-  return { id: teamId };
+  const params = {
+    TableName,
+    Key: {
+      PK: teamId,
+      SK: "team"
+    }
+  };
+
+  return DocumentClient.delete(params).promise();
 };
 export const fetchTeamUsers = async ({ teamId }) => {
   const params = {
     TableName,
     IndexName: "GSI2",
-    KeyConditionExpression: "GSI2PK = :teamId",
-    ExpressionAttributeValues: {
-      ":teamId": teamId
-    }
+    ...makeKeyConditionExpression({
+      GSI2PK: teamId
+    })
   };
 
   const { Items } = await DocumentClient.query(params).promise();
@@ -56,15 +78,10 @@ export const addUserToTeam = async ({ user, team }) => {
       PK: user.id,
       SK: "user"
     },
-    UpdateExpression: "set #GSI2PK = :GSI2PK, #GSI2SK = :GSI2SK",
-    ExpressionAttributeNames: {
-      "#GSI2PK": "GSI2PK",
-      "#GSI2SK": "GSI2SK"
-    },
-    ExpressionAttributeValues: {
-      ":GSI2PK": team.id,
-      ":GSI2SK": moment().toISOString()
-    },
+    ...makeUpdateExpression({
+      GSI2PK: team.id,
+      GSI2SK: moment().toISOString()
+    }),
     ReturnValues: "ALL_NEW"
   };
   const { Attributes } = await DocumentClient.update(params).promise();
