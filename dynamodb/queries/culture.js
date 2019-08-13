@@ -16,7 +16,6 @@ export const fetchCultureById = async cultureId => {
   const { Item: object } = await DocumentClient.get(params).promise();
   return object;
 };
-
 export const createCulture = async input => {
   const { name, position } = input;
   const uuid = uuidv4();
