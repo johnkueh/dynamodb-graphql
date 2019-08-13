@@ -216,6 +216,24 @@ Object {
 }
 `;
 
+exports[`Updating team managing team cultureValues is able to remove all team cultureValues 1`] = `
+Object {
+  "data": Object {
+    "updateTeam": Object {
+      "cultureValues": Array [],
+      "name": "Bamboo Forest",
+    },
+  },
+  "errors": undefined,
+  "extensions": undefined,
+  "http": Object {
+    "headers": Headers {
+      Symbol(map): Object {},
+    },
+  },
+}
+`;
+
 exports[`Updating team managing team cultureValues is able to remove team cultureValues 1`] = `
 Object {
   "data": Object {

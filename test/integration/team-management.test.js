@@ -260,10 +260,19 @@ describe("Updating team", () => {
       expect(res).toMatchSnapshot();
     });
 
-    it.skip("is able to remove all team cultureValues", async () => {
-      // const teamwork = await factory.create('cultureValue', { name: 'Teamwork' });
-      // const efficiency = await factory.create('cultureValue', { name: 'Efficiency' });
-      // await user.team.$relatedQuery('cultureValues').relate([teamwork.id, efficiency.id]);
+    it("is able to remove all team cultureValues", async () => {
+      const teamwork = await Queries.putCulture({
+        name: "Teamwork",
+        position: 1
+      });
+      const efficiency = await Queries.putCulture({
+        name: "Efficiency",
+        position: 2
+      });
+      await Queries.addCulturesToTeam({
+        cultureIds: [teamwork.id, efficiency.id],
+        teamId: user.team.id
+      });
 
       const res = await performQuery({
         context: { user },
@@ -276,13 +285,7 @@ describe("Updating team", () => {
         }
       });
 
-      expect(res).toMatchSnapshot({
-        data: {
-          updateTeam: {
-            id: expect.any(String)
-          }
-        }
-      });
+      expect(res).toMatchSnapshot();
     });
   });
 });
