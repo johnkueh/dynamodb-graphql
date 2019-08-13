@@ -53,7 +53,7 @@ describe("Signing up", () => {
   });
 
   it("is not able to signup with taken email", async () => {
-    const existingUser = await Queries.putUser({
+    const existingUser = await Queries.createUser({
       name: "Old Mcdonald",
       email: "old@mcdonald.com",
       password: "happymeal"
@@ -129,7 +129,7 @@ describe("Logging in", () => {
   });
 
   it("is able to login with correct credentials", async () => {
-    await Queries.putUser({
+    await Queries.createUser({
       name: "Jedi Knight",
       email: "jedi@knight.com",
       password: "youshallnotpass"
@@ -158,7 +158,7 @@ describe("Logging in", () => {
 describe("Fetching user profile", () => {
   let user;
   beforeEach(async () => {
-    user = await Queries.putUser({
+    user = await Queries.createUser({
       name: "John Doe",
       email: "john@doe.com",
       password: "password"
@@ -214,7 +214,7 @@ describe("Updating user profile", () => {
   }
   `;
   beforeEach(async () => {
-    user = await Queries.putUser({
+    user = await Queries.createUser({
       name: "John Doe",
       email: "john@doe.com",
       password: "password"
@@ -268,7 +268,7 @@ describe("Updating user profile", () => {
   });
 
   it("fails to update with taken email", async () => {
-    await Queries.putUser({
+    await Queries.createUser({
       name: "Death Toll",
       email: "taken@email.com",
       password: "deathishere",

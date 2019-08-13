@@ -100,7 +100,7 @@ export const AddTeamUserMutation = mutationField("addTeamUser", {
     })
   },
   resolve: async (parent, { input }, ctx) => {
-    const user = await Queries.putUser(input);
+    const user = await Queries.createUser(input);
     const team = await Queries.fetchTeamById(ctx.user.teamId);
     await Queries.addUserToTeam({ user, team });
     return team;

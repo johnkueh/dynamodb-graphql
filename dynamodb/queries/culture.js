@@ -17,7 +17,7 @@ export const fetchCultureById = async cultureId => {
   return object;
 };
 
-export const putCulture = async input => {
+export const createCulture = async input => {
   const { name, position } = input;
   const uuid = uuidv4();
   const SK = "culture";

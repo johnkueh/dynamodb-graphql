@@ -16,7 +16,7 @@ describe("Creating new response survey", () => {
       teamName: "Star Wars"
     });
 
-    response = await Queries.putResponse({
+    response = await Queries.createResponse({
       submittedAt: moment("2018-05-10").toISOString(),
       userId: user.id,
       teamId: user.teamId,

@@ -18,7 +18,7 @@ export const fetchResponseById = async responseId => {
   const { Item: object } = await DocumentClient.get(params).promise();
   return object;
 };
-export const putResponse = async data => {
+export const createResponse = async data => {
   const { userId, teamId, sentAt, ...input } = data;
   const PK = uuidv4();
   const SK = "response";

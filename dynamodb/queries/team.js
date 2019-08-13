@@ -19,7 +19,7 @@ export const fetchTeamById = async teamId => {
   const { Item: object } = await DocumentClient.get(params).promise();
   return object;
 };
-export const putTeam = async input => {
+export const createTeam = async input => {
   const uuid = uuidv4();
   const params = {
     TableName,

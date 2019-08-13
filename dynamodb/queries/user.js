@@ -36,7 +36,7 @@ export const fetchUserByEmail = async email => {
   } = await DocumentClient.query(params).promise();
   return userObject(user);
 };
-export const putUser = async data => {
+export const createUser = async data => {
   await validate(data, userInputSchema);
 
   const { email, password = "", ...input } = data;
@@ -110,12 +110,12 @@ export const createUserWithTeam = async data => {
   await validate(data, schema);
 
   const { email, password = "", teamName, ...input } = data;
-  const user = await putUser({
+  const user = await createUser({
     email,
     password,
     ...input
   });
-  const team = await Team.putTeam({ name: teamName });
+  const team = await Team.createTeam({ name: teamName });
   await Team.addUserToTeam({ user, team });
   user.team = team;
   return user;

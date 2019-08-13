@@ -39,7 +39,7 @@ describe("Fetching team", () => {
   });
 
   it("is able to fetch cultureValues", async () => {
-    const culture = await Queries.putCulture({
+    const culture = await Queries.createCulture({
       name: "Teamwork",
       position: 1
     });
@@ -92,7 +92,9 @@ describe("Updating team", () => {
   });
 
   it("is not able to update not own team", async () => {
-    const otherTeam = await Queries.putTeam({ name: "Darth Valley Knights" });
+    const otherTeam = await Queries.createTeam({
+      name: "Darth Valley Knights"
+    });
 
     const res = await performQuery({
       context: { user },
@@ -203,11 +205,11 @@ describe("Updating team", () => {
     `;
 
     it("is able to add team cultureValues", async () => {
-      const teamwork = await Queries.putCulture({
+      const teamwork = await Queries.createCulture({
         name: "Teamwork",
         position: 1
       });
-      const efficiency = await Queries.putCulture({
+      const efficiency = await Queries.createCulture({
         name: "Efficiency",
         position: 2
       });
@@ -227,11 +229,11 @@ describe("Updating team", () => {
     });
 
     it("is able to remove team cultureValues", async () => {
-      const teamwork = await Queries.putCulture({
+      const teamwork = await Queries.createCulture({
         name: "Teamwork",
         position: 1
       });
-      const efficiency = await Queries.putCulture({
+      const efficiency = await Queries.createCulture({
         name: "Efficiency",
         position: 2
       });
@@ -261,11 +263,11 @@ describe("Updating team", () => {
     });
 
     it("is able to remove all team cultureValues", async () => {
-      const teamwork = await Queries.putCulture({
+      const teamwork = await Queries.createCulture({
         name: "Teamwork",
         position: 1
       });
-      const efficiency = await Queries.putCulture({
+      const efficiency = await Queries.createCulture({
         name: "Efficiency",
         position: 2
       });
@@ -315,12 +317,12 @@ describe("Listing team users", () => {
     });
     team = user.team;
 
-    const user2 = await Queries.putUser({
+    const user2 = await Queries.createUser({
       name: "Maxwell Crowe",
       email: "maxwell@crowe.com",
       password: "password"
     });
-    const user3 = await Queries.putUser({
+    const user3 = await Queries.createUser({
       name: "Shannon Crowe",
       email: "shannon@crowe.com",
       password: "password"
@@ -374,7 +376,7 @@ describe("Adding team users", () => {
   });
 
   it("unable to add team member with existing email", async () => {
-    await Queries.putUser({
+    await Queries.createUser({
       name: "Tester joe",
       email: "test@user.com",
       password: "password"
@@ -539,7 +541,7 @@ describe("Removing team users", () => {
   });
 
   it("able to remove team members", async () => {
-    const teamUser = await Queries.putUser({
+    const teamUser = await Queries.createUser({
       name: "Minion 1",
       email: "minion1@despicable.com",
       password: "password"

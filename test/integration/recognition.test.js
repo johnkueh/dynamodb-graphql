@@ -13,9 +13,9 @@ describe("Fetching culture values", () => {
     }
   `;
   beforeEach(async () => {
-    await Queries.putCulture({ name: "Teamwork", position: 1 });
-    await Queries.putCulture({ name: "Integrity", position: 2 });
-    await Queries.putCulture({ name: "Helpful", position: 3 });
+    await Queries.createCulture({ name: "Teamwork", position: 1 });
+    await Queries.createCulture({ name: "Integrity", position: 2 });
+    await Queries.createCulture({ name: "Helpful", position: 3 });
   });
 
   it("can fetch culture values without auth", async () => {
@@ -49,7 +49,7 @@ describe("viewing responses", () => {
       teamName: "Star Wars"
     });
 
-    await Queries.putResponse({
+    await Queries.createResponse({
       sentAt: moment("2018-05-10").toISOString(),
       submittedAt: moment("2018-05-10").toISOString(),
       userId: user.id,
@@ -57,7 +57,7 @@ describe("viewing responses", () => {
       feeling: "HAPPY"
     });
 
-    user2 = await Queries.putUser({
+    user2 = await Queries.createUser({
       name: "Anakin Skywalker",
       email: "anakin@skywalker.com",
       password: "password"
@@ -68,7 +68,7 @@ describe("viewing responses", () => {
       team: user.team
     });
 
-    await Queries.putResponse({
+    await Queries.createResponse({
       sentAt: moment("2018-05-11").toISOString(),
       submittedAt: moment("2018-05-11").toISOString(),
       userId: user2.id,
@@ -100,7 +100,7 @@ describe("viewing responses", () => {
       teamName: "Disney"
     });
 
-    await Queries.putResponse({
+    await Queries.createResponse({
       sentAt: moment("2018-05-10").toISOString(),
       submittedAt: moment("2018-05-10").toISOString(),
       userId: otherTeamUser.id,
@@ -124,7 +124,7 @@ describe("viewing responses", () => {
 
   it("only show responses in the filtered dates", async () => {
     // This response entry shouldnt appear because its not in the filtered month
-    await Queries.putResponse({
+    await Queries.createResponse({
       sentAt: moment("2018-01-10").toISOString(),
       submittedAt: moment("2018-01-10").toISOString(),
       userId: user.id,
@@ -168,7 +168,7 @@ describe("submitting responses", () => {
       password: "password",
       teamName: "Star Wars"
     });
-    response = await Queries.putResponse({
+    response = await Queries.createResponse({
       sentAt: moment("2018-05-10").toISOString(),
       userId: user.id,
       teamId: user.teamId,
