@@ -1,6 +1,6 @@
 import { DocumentClient } from "../lib/dynamodb-client";
 
-export const TableName = process.env.DYNAMODB_TABLE;
+export const TableName = process.env.DYNAMODB_TABLE || "dynamodb-table";
 export const client = DocumentClient;
 export const makeUpdateExpression = input => {
   const keys = Object.keys(input);
