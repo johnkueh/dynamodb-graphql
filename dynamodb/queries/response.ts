@@ -7,7 +7,7 @@ import {
   client as DocumentClient
 } from "../helpers";
 
-export const fetchResponseById = async responseId => {
+export const fetchResponseById = async (responseId: string) => {
   const params = {
     TableName,
     Key: {
@@ -18,7 +18,7 @@ export const fetchResponseById = async responseId => {
   const { Item: object } = await DocumentClient.get(params).promise();
   return object;
 };
-export const createResponse = async data => {
+export const createResponse = async (data: Record<string, string>) => {
   const { userId, teamId, sentAt, ...input } = data;
   const PK = uuidv4();
   const SK = "response";
@@ -41,7 +41,9 @@ export const createResponse = async data => {
   await DocumentClient.put(params).promise();
   return fetchResponseById(PK);
 };
-export const updateResponse = async ({ id: responseId, ...input }) => {
+export const updateResponse = async (data: Record<string, string>) => {
+  const { id: responseId, ...input } = data;
+
   const schema = yup.object().shape({
     feeling: yup.string().oneOf(["HAPPY", "NEUTRAL", "SAD"])
   });
@@ -61,16 +63,17 @@ export const updateResponse = async ({ id: responseId, ...input }) => {
   const { Attributes: object } = await DocumentClient.update(params).promise();
   return object;
 };
-export const fetchResponsesForUserByDateRange = async ({
-  userId,
-  fromDate,
-  toDate
-}) => {};
-export const fetchResponsesForTeamByDateRange = async ({
-  teamId,
-  fromDate,
-  toDate
-}) => {
+
+interface TeamResponseByDateRangeInput {
+  teamId: string;
+  fromDate: string;
+  toDate: string;
+}
+
+export const fetchResponsesForTeamByDateRange = async (
+  input: TeamResponseByDateRangeInput
+) => {
+  const { teamId, fromDate, toDate } = input;
   const params = {
     TableName,
     IndexName: "GSI1",

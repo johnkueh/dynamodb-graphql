@@ -1,12 +1,16 @@
 import { DocumentClient } from "../lib/dynamodb-client";
 
+interface InputObject {
+  [key: string]: string;
+}
+
 export const TableName = process.env.DYNAMODB_TABLE || "dynamodb-table";
 export const client = DocumentClient;
-export const makeUpdateExpression = input => {
+export const makeUpdateExpression = (input: InputObject) => {
   const keys = Object.keys(input);
-  const expressions = [];
-  const ExpressionAttributeNames = {};
-  const ExpressionAttributeValues = {};
+  const expressions = [] as Array<String>;
+  const ExpressionAttributeNames = {} as Record<string, string>;
+  const ExpressionAttributeValues = {} as Record<string, string>;
   keys.forEach(key => {
     expressions.push(`#${key} = :${key}`);
     ExpressionAttributeNames[`#${key}`] = key;
@@ -20,11 +24,11 @@ export const makeUpdateExpression = input => {
     ExpressionAttributeValues
   };
 };
-export const makeKeyConditionExpression = input => {
+export const makeKeyConditionExpression = (input: InputObject) => {
   const keys = Object.keys(input);
-  const expressions = [];
-  const ExpressionAttributeNames = {};
-  const ExpressionAttributeValues = {};
+  const expressions = [] as Array<String>;
+  const ExpressionAttributeNames = {} as Record<string, string>;
+  const ExpressionAttributeValues = {} as Record<string, string>;
   keys.forEach(key => {
     expressions.push(`#${key} = :${key}`);
     ExpressionAttributeNames[`#${key}`] = key;

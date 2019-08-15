@@ -46,11 +46,11 @@ Object {
 }
 `;
 
-exports[`submitting responses is not able to update response with invalid feeling 1`] = `"{\\"http\\":{\\"headers\\":{}},\\"errors\\":[{\\"message\\":\\"ValidationError\\",\\"locations\\":[{\\"line\\":3,\\"column\\":7}],\\"path\\":[\\"updateResponse\\"],\\"extensions\\":{\\"code\\":\\"BAD_USER_INPUT\\",\\"exception\\":{\\"errors\\":{\\"feeling\\":\\"Feeling must be one of the following values: happy, neutral, sad\\"}}}}],\\"data\\":null}"`;
+exports[`submitting responses is not able to update response with invalid feeling 1`] = `"{\\"http\\":{\\"headers\\":{}},\\"errors\\":[{\\"message\\":\\"ValidationError\\",\\"locations\\":[{\\"line\\":3,\\"column\\":7}],\\"path\\":[\\"updateResponse\\"],\\"extensions\\":{\\"code\\":\\"BAD_USER_INPUT\\",\\"exception\\":{\\"errors\\":{\\"feeling\\":\\"Feeling must be one of the following values: happy, neutral, sad\\"}}}}],\\"data\\":{\\"updateResponse\\":null}}"`;
 
-exports[`submitting responses is not able to update response with invalid id 1`] = `"{\\"http\\":{\\"headers\\":{}},\\"errors\\":[{\\"message\\":\\"ValidationError\\",\\"locations\\":[{\\"line\\":3,\\"column\\":7}],\\"path\\":[\\"updateResponse\\"],\\"extensions\\":{\\"code\\":\\"BAD_USER_INPUT\\",\\"exception\\":{\\"errors\\":{\\"auth\\":\\"You are not authorized to perform this action\\"}}}}],\\"data\\":null}"`;
+exports[`submitting responses is not able to update response with invalid id 1`] = `"{\\"http\\":{\\"headers\\":{}},\\"errors\\":[{\\"message\\":\\"ValidationError\\",\\"locations\\":[{\\"line\\":3,\\"column\\":7}],\\"path\\":[\\"updateResponse\\"],\\"extensions\\":{\\"code\\":\\"BAD_USER_INPUT\\",\\"exception\\":{\\"errors\\":{\\"auth\\":\\"You are not authorized to perform this action\\"}}}}],\\"data\\":{\\"updateResponse\\":null}}"`;
 
-exports[`submitting responses is not able to update response without feeling 1`] = `"{\\"http\\":{\\"headers\\":{}},\\"errors\\":[{\\"message\\":\\"ValidationError\\",\\"locations\\":[{\\"line\\":3,\\"column\\":7}],\\"path\\":[\\"updateResponse\\"],\\"extensions\\":{\\"code\\":\\"BAD_USER_INPUT\\",\\"exception\\":{\\"errors\\":{\\"feeling\\":\\"Feeling must be one of the following values: happy, neutral, sad\\"}}}}],\\"data\\":null}"`;
+exports[`submitting responses is not able to update response without feeling 1`] = `"{\\"http\\":{\\"headers\\":{}},\\"errors\\":[{\\"message\\":\\"ValidationError\\",\\"locations\\":[{\\"line\\":3,\\"column\\":7}],\\"path\\":[\\"updateResponse\\"],\\"extensions\\":{\\"code\\":\\"BAD_USER_INPUT\\",\\"exception\\":{\\"errors\\":{\\"feeling\\":\\"Feeling must be one of the following values: happy, neutral, sad\\"}}}}],\\"data\\":{\\"updateResponse\\":null}}"`;
 
 exports[`viewing responses is able to list responses belonging to team 1`] = `
 Object {

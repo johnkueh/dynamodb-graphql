@@ -6,7 +6,7 @@ provider:
     lambda: true
   name: aws
   runtime: nodejs10.x
-  stage: ${opt:stage, env:NODE_ENV, 'dev'}
+  stage: ${opt:stage, env:NODE_ENV, 'development'}
   environment:
     DYNAMODB_TABLE: ${self:service}-${self:provider.stage}
   iamRoleStatements:
@@ -45,7 +45,7 @@ custom:
     start:
       migrate: true
     stages:
-      - dev
+      - development
       - test
 
 package:

@@ -1,9 +1,10 @@
+import { DynamoDBStreamEvent, DynamoDBRecord } from "aws-lambda";
 import AWS from "aws-sdk";
 import moment from "moment";
 import { SES } from "../lib/ses-client";
 import { Queries } from "../dynamodb/queries";
 
-export const handler = async event => {
+export const handler = async (event: DynamoDBStreamEvent) => {
   await Promise.all(event.Records.map(record => processRecord(record)));
   return {
     statusCode: 200,
@@ -13,8 +14,12 @@ export const handler = async event => {
   };
 };
 
-const processRecord = async record => {
-  const { eventName, eventSource, dynamodb } = record;
+const processRecord = async (record: DynamoDBRecord) => {
+  const { eventName, dynamodb } = record;
+
+  if (dynamodb == null) return;
+  if (dynamodb.NewImage == null) return;
+
   const { userId, teamId, PK, SK } = AWS.DynamoDB.Converter.unmarshall(
     dynamodb.NewImage
   );
@@ -25,6 +30,9 @@ const processRecord = async record => {
 
   const user = await Queries.fetchUserById(userId);
   const team = await Queries.fetchTeamById(teamId);
+
+  if (team == null || user == null) return;
+
   const params = {
     Destination: {
       ToAddresses: [user.email]

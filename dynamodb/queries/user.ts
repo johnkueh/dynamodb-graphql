@@ -11,7 +11,17 @@ import {
 } from "../helpers";
 import * as Team from "./team";
 
-export const fetchUserById = async userId => {
+export interface UserType {
+  id: string;
+  jwtWithOptions: (options: Record<string, string>) => string;
+  validPassword: (password: string) => boolean;
+  email: string;
+  jwt: string;
+  teamId: string;
+  team: object;
+}
+
+export const fetchUserById = async (userId: string) => {
   const params = {
     TableName,
     Key: {
@@ -22,7 +32,7 @@ export const fetchUserById = async userId => {
   const { Item: user } = await DocumentClient.get(params).promise();
   return userObject(user);
 };
-export const fetchUserByEmail = async email => {
+export const fetchUserByEmail = async (email: string) => {
   const params = {
     TableName,
     IndexName: "GSI1",
@@ -31,12 +41,11 @@ export const fetchUserByEmail = async email => {
       GSI1SK: email
     })
   };
-  const {
-    Items: [user]
-  } = await DocumentClient.query(params).promise();
+  const { Items = [] } = await DocumentClient.query(params).promise();
+  const user = Items[0];
   return userObject(user);
 };
-export const createUser = async data => {
+export const createUser = async (data: Record<string, string>) => {
   await validate(data, userInputSchema);
 
   const { email, password = "", ...input } = data;
@@ -62,7 +71,7 @@ export const createUser = async data => {
   await DocumentClient.put(params).promise();
   return fetchUserById(PK);
 };
-export const updateUser = async data => {
+export const updateUser = async (data: Record<string, string>) => {
   await validate(data, userInputSchema);
 
   const { id: userId, password, ...input } = data;
@@ -84,7 +93,7 @@ export const updateUser = async data => {
   const { Attributes: user } = await DocumentClient.update(params).promise();
   return userObject(user);
 };
-export const deleteUser = async ({ id: userId }) => {
+export const deleteUser = async ({ id: userId }: { id: string }) => {
   const params = {
     TableName,
     Key: {
@@ -95,7 +104,7 @@ export const deleteUser = async ({ id: userId }) => {
 
   return DocumentClient.delete(params).promise();
 };
-export const createUserWithTeam = async data => {
+export const createUserWithTeam = async (data: Record<string, string>) => {
   const schema = yup.object().shape({
     name: yup.string().min(1),
     email: yup
@@ -115,24 +124,36 @@ export const createUserWithTeam = async data => {
     password,
     ...input
   });
-  const team = await Team.createTeam({ name: teamName });
-  await Team.addUserToTeam({ user, team });
-  user.team = team;
+
+  if (user != null) {
+    const team = await Team.createTeam({ name: teamName });
+    if (team != null) {
+      await Team.addUserToTeam({ user, team });
+      user.team = team;
+    }
+  }
+
   return user;
 };
-export const userObject = user => {
+
+export const userObject = (
+  user: Record<string, string> | undefined
+): UserType | null => {
   if (user == null) return null;
 
   return {
-    jwtWithOptions: options =>
+    jwtWithOptions: (options: Record<string, string>) =>
       jsonwebtoken.sign(
         { id: user.PK, email: user.email, options },
         "JWTSECRET"
       ),
     jwt: jsonwebtoken.sign({ id: user.PK, email: user.email }, "JWTSECRET"),
-    validPassword: password => bcrypt.compareSync(password, user.password),
+    validPassword: (password: string) =>
+      bcrypt.compareSync(password, user.password),
+    id: user.PK,
     teamId: user.GSI2PK,
     email: user.GSI1SK,
+    team: {},
     ...user
   };
 };

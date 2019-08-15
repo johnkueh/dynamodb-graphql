@@ -15,7 +15,9 @@ export const UserType = objectType({
     t.string("email");
     t.string("name");
     t.string("tz");
+    t.string("teamId");
     t.field("team", {
+      nullable: true,
       type: "Team",
       resolve: async ({ teamId }) => {
         return Queries.fetchTeamById(teamId);
@@ -28,7 +30,7 @@ export const AuthPayloadType = objectType({
   name: "AuthPayload",
   definition(t) {
     t.string("jwt");
-    t.field("user", { type: UserType });
+    t.field("user", { nullable: true, type: UserType });
   }
 });
 
@@ -52,6 +54,8 @@ export const SignupMutation = mutationField("signup", {
   },
   resolve: async (parent, { input }) => {
     const user = await Queries.createUserWithTeam(input);
+    if (user == null) return null;
+
     return {
       jwt: user.jwt,
       user

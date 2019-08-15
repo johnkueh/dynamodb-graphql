@@ -11,12 +11,14 @@ import { Queries } from "../dynamodb/queries";
 export const ResponseType = objectType({
   name: "Response",
   definition(t) {
+    t.string("userId");
     t.string("id", { nullable: true });
-    t.dateTime("sentAt", { nullable: true });
-    t.dateTime("submittedAt", { nullable: true });
+    t.string("sentAt", { nullable: true });
+    t.string("submittedAt", { nullable: true });
     t.string("feeling", { nullable: true });
     t.field("user", {
       type: "User",
+      nullable: true,
       resolve: async parent => {
         return Queries.fetchUserById(parent.userId);
       }
@@ -71,6 +73,7 @@ export const UpdateResponsePayloadType = objectType({
 
 export const UpdateResponseMutation = mutationField("updateResponse", {
   type: UpdateResponsePayloadType,
+  nullable: true,
   args: {
     input: arg({
       type: UpdateResponseInputType,
@@ -82,7 +85,11 @@ export const UpdateResponseMutation = mutationField("updateResponse", {
       submittedAt: moment().toISOString(),
       ...input
     });
+
     const user = await Queries.fetchUserById(response.userId);
+
+    if (user == null) return null;
+
     const jwt = user.jwtWithOptions({
       expiresIn: "1h" // We want this token to expire quickly
     });

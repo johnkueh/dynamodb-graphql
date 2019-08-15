@@ -6,7 +6,7 @@ import {
   arg,
   stringArg
 } from "nexus";
-import { isEmpty, difference } from "lodash";
+import { isEmpty } from "lodash";
 import { Queries } from "../dynamodb/queries";
 
 export const TeamType = objectType({
@@ -64,14 +64,14 @@ export const UpdateTeamMutation = mutationField("updateTeam", {
     { input: anInput, input: { id: teamId, cultureValueIds, ...input } },
     ctx
   ) => {
-    if (!isEmpty(input)) {
+    if (!isEmpty(input) && teamId != null) {
       await Queries.updateTeam({
         id: teamId,
         ...input
       });
     }
 
-    if (cultureValueIds != null) {
+    if (teamId != null && cultureValueIds != null) {
       await Queries.removeCulturesFromTeam(teamId);
       await Queries.addCulturesToTeam({
         cultureIds: cultureValueIds,
@@ -93,6 +93,7 @@ export const AddTeamUserInputType = inputObjectType({
 
 export const AddTeamUserMutation = mutationField("addTeamUser", {
   type: TeamType,
+  nullable: true,
   args: {
     input: arg({
       type: AddTeamUserInputType,
@@ -102,7 +103,13 @@ export const AddTeamUserMutation = mutationField("addTeamUser", {
   resolve: async (parent, { input }, ctx) => {
     const user = await Queries.createUser(input);
     const team = await Queries.fetchTeamById(ctx.user.teamId);
-    await Queries.addUserToTeam({ user, team });
+
+    if (user != null && team != null) {
+      await Queries.addUserToTeam({ user, team });
+    }
+
+    if (team == null) return null;
+
     return team;
   }
 });
@@ -130,14 +137,18 @@ export const UpdateTeamUserMutation = mutationField("updateTeamUser", {
 
 export const RemoveTeamUserMutation = mutationField("removeTeamUser", {
   type: TeamType,
+  nullable: true,
   args: {
     id: stringArg({
       required: true
     })
   },
   resolve: async (parent, { id }, ctx) => {
+    if (id != null) {
+      await Queries.removeUserFromTeam({ userId: id });
+    }
+
     const team = await Queries.fetchTeamById(ctx.user.teamId);
-    await Queries.removeUserFromTeam({ userId: id, teamId: ctx.user.teamId });
     return team;
   }
 });

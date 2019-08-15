@@ -28,9 +28,9 @@ Object {
 }
 `;
 
-exports[`Adding team users unable to add team member with existing email 1`] = `"{\\"http\\":{\\"headers\\":{}},\\"errors\\":[{\\"message\\":\\"ValidationError\\",\\"locations\\":[{\\"line\\":3,\\"column\\":7}],\\"path\\":[\\"addTeamUser\\"],\\"extensions\\":{\\"code\\":\\"BAD_USER_INPUT\\",\\"exception\\":{\\"errors\\":{\\"email\\":\\"Email is taken\\"}}}}],\\"data\\":null}"`;
+exports[`Adding team users unable to add team member with existing email 1`] = `"{\\"http\\":{\\"headers\\":{}},\\"errors\\":[{\\"message\\":\\"ValidationError\\",\\"locations\\":[{\\"line\\":3,\\"column\\":7}],\\"path\\":[\\"addTeamUser\\"],\\"extensions\\":{\\"code\\":\\"BAD_USER_INPUT\\",\\"exception\\":{\\"errors\\":{\\"email\\":\\"Email is taken\\"}}}}],\\"data\\":{\\"addTeamUser\\":null}}"`;
 
-exports[`Adding team users unable to add team member with missing fields 1`] = `"{\\"http\\":{\\"headers\\":{}},\\"errors\\":[{\\"message\\":\\"ValidationError\\",\\"locations\\":[{\\"line\\":3,\\"column\\":7}],\\"path\\":[\\"addTeamUser\\"],\\"extensions\\":{\\"code\\":\\"BAD_USER_INPUT\\",\\"exception\\":{\\"errors\\":{\\"name\\":\\"Name must be at least 1 characters\\",\\"email\\":\\"Email must be a valid email\\"}}}}],\\"data\\":null}"`;
+exports[`Adding team users unable to add team member with missing fields 1`] = `"{\\"http\\":{\\"headers\\":{}},\\"errors\\":[{\\"message\\":\\"ValidationError\\",\\"locations\\":[{\\"line\\":3,\\"column\\":7}],\\"path\\":[\\"addTeamUser\\"],\\"extensions\\":{\\"code\\":\\"BAD_USER_INPUT\\",\\"exception\\":{\\"errors\\":{\\"name\\":\\"Name must be at least 1 characters\\",\\"email\\":\\"Email must be a valid email\\"}}}}],\\"data\\":{\\"addTeamUser\\":null}}"`;
 
 exports[`Fetching team is able to fetch cultureValues 1`] = `
 Object {
@@ -129,9 +129,9 @@ Object {
 }
 `;
 
-exports[`Removing team users not able to remove oneself from own team 1`] = `"{\\"http\\":{\\"headers\\":{}},\\"errors\\":[{\\"message\\":\\"ValidationError\\",\\"locations\\":[{\\"line\\":3,\\"column\\":7}],\\"path\\":[\\"removeTeamUser\\"],\\"extensions\\":{\\"code\\":\\"BAD_USER_INPUT\\",\\"exception\\":{\\"errors\\":{\\"auth\\":\\"You are not authorized to perform this action\\"}}}}],\\"data\\":null}"`;
+exports[`Removing team users not able to remove oneself from own team 1`] = `"{\\"http\\":{\\"headers\\":{}},\\"errors\\":[{\\"message\\":\\"ValidationError\\",\\"locations\\":[{\\"line\\":3,\\"column\\":7}],\\"path\\":[\\"removeTeamUser\\"],\\"extensions\\":{\\"code\\":\\"BAD_USER_INPUT\\",\\"exception\\":{\\"errors\\":{\\"auth\\":\\"You are not authorized to perform this action\\"}}}}],\\"data\\":{\\"removeTeamUser\\":null}}"`;
 
-exports[`Removing team users not able to remove other team's members 1`] = `"{\\"http\\":{\\"headers\\":{}},\\"errors\\":[{\\"message\\":\\"ValidationError\\",\\"locations\\":[{\\"line\\":3,\\"column\\":7}],\\"path\\":[\\"removeTeamUser\\"],\\"extensions\\":{\\"code\\":\\"BAD_USER_INPUT\\",\\"exception\\":{\\"errors\\":{\\"auth\\":\\"You are not authorized to perform this action\\"}}}}],\\"data\\":null}"`;
+exports[`Removing team users not able to remove other team's members 1`] = `"{\\"http\\":{\\"headers\\":{}},\\"errors\\":[{\\"message\\":\\"ValidationError\\",\\"locations\\":[{\\"line\\":3,\\"column\\":7}],\\"path\\":[\\"removeTeamUser\\"],\\"extensions\\":{\\"code\\":\\"BAD_USER_INPUT\\",\\"exception\\":{\\"errors\\":{\\"auth\\":\\"You are not authorized to perform this action\\"}}}}],\\"data\\":{\\"removeTeamUser\\":null}}"`;
 
 exports[`Updating team is able to update own team 1`] = `
 Object {

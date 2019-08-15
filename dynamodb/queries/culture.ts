@@ -1,11 +1,29 @@
 import uuidv4 from "uuid/v4";
+import ValidationErrors from "../../lib/validation-errors";
 import {
   TableName,
   makeKeyConditionExpression,
   client as DocumentClient
 } from "../helpers";
 
-export const fetchCultureById = async cultureId => {
+interface CultureInput {
+  name?: string;
+  position?: number;
+}
+interface AddCultureInput {
+  cultureId: string;
+  teamId: string;
+  position: number;
+}
+
+interface RemoveCultureInput extends AddCultureInput {}
+
+interface AddCulturesInput {
+  cultureIds: string[];
+  teamId: string;
+}
+
+export const fetchCultureById = async (cultureId: string) => {
   const params = {
     TableName,
     Key: {
@@ -16,7 +34,7 @@ export const fetchCultureById = async cultureId => {
   const { Item: object } = await DocumentClient.get(params).promise();
   return object;
 };
-export const createCulture = async input => {
+export const createCulture = async (input: CultureInput) => {
   const { name, position } = input;
   const uuid = uuidv4();
   const SK = "culture";
@@ -35,7 +53,7 @@ export const createCulture = async input => {
   await DocumentClient.put(params).promise();
   return fetchCultureById(uuid);
 };
-export const fetchCultures = async data => {
+export const fetchCultures = async () => {
   const params = {
     TableName,
     IndexName: "GSI1",
@@ -47,7 +65,7 @@ export const fetchCultures = async data => {
   const { Items } = await DocumentClient.query(params).promise();
   return Items;
 };
-export const fetchCultureForTeam = async teamId => {
+export const fetchCultureForTeam = async (teamId: string) => {
   const params = {
     TableName,
     KeyConditionExpression: "#PK = :PK AND begins_with(#SK, :SK)",
@@ -64,9 +82,15 @@ export const fetchCultureForTeam = async teamId => {
   const { Items } = await DocumentClient.query(params).promise();
   return Items;
 };
-export const addCultureToTeam = async input => {
+export const addCultureToTeam = async (input: AddCultureInput) => {
   const { cultureId, teamId, position } = input;
   const culture = await fetchCultureById(cultureId);
+
+  if (culture == null)
+    throw ValidationErrors({
+      culture: "Culture not found"
+    });
+
   const PK = teamId;
 
   const params = {
@@ -81,7 +105,10 @@ export const addCultureToTeam = async input => {
   };
   return DocumentClient.put(params).promise();
 };
-export const addCulturesToTeam = async ({ cultureIds, teamId }) => {
+export const addCulturesToTeam = async ({
+  cultureIds,
+  teamId
+}: AddCulturesInput) => {
   await Promise.all(
     cultureIds.map((cultureId, idx) => {
       return addCultureToTeam({
@@ -92,7 +119,7 @@ export const addCulturesToTeam = async ({ cultureIds, teamId }) => {
     })
   );
 };
-export const removeCultureFromTeam = async input => {
+export const removeCultureFromTeam = async (input: RemoveCultureInput) => {
   const { cultureId, teamId, position } = input;
   const params = {
     TableName,
@@ -104,8 +131,11 @@ export const removeCultureFromTeam = async input => {
 
   return DocumentClient.delete(params).promise();
 };
-export const removeCulturesFromTeam = async teamId => {
+export const removeCulturesFromTeam = async (teamId: string) => {
   const teamCultureValues = await fetchCultureForTeam(teamId);
+
+  if (teamCultureValues == null) return;
+
   await Promise.all(
     teamCultureValues.map(({ cultureId, position }) => {
       return removeCultureFromTeam({

@@ -4,6 +4,7 @@ import { Queries } from "../dynamodb/queries";
 export const canManageTeamUser = rule()(async (parent, args, ctx) => {
   const userId = args.id || args.input.id;
   const user = await Queries.fetchUserById(userId);
+  if (!user) return false;
 
   return user.teamId === ctx.user.teamId;
 });
