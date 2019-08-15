@@ -71,7 +71,7 @@ export interface NexusGenEnums {
 export interface NexusGenRootTypes {
   AuthPayload: { // root type
     jwt: string; // String!
-    user: NexusGenRootTypes['User']; // User!
+    user?: NexusGenRootTypes['User'] | null; // User
   }
   CultureValue: { // root type
     id: string; // ID!
@@ -85,8 +85,8 @@ export interface NexusGenRootTypes {
   Response: { // root type
     feeling?: string | null; // String
     id?: string | null; // String
-    sentAt?: any | null; // DateTime
-    submittedAt?: any | null; // DateTime
+    sentAt?: string | null; // String
+    submittedAt?: string | null; // String
     userId: string; // String!
   }
   Team: { // root type
@@ -104,6 +104,7 @@ export interface NexusGenRootTypes {
     email: string; // String!
     id: string; // ID!
     name: string; // String!
+    teamId: string; // String!
     tz: string; // String!
   }
   String: string;
@@ -129,7 +130,7 @@ export interface NexusGenAllTypes extends NexusGenRootTypes {
 export interface NexusGenFieldTypes {
   AuthPayload: { // field return type
     jwt: string; // String!
-    user: NexusGenRootTypes['User']; // User!
+    user: NexusGenRootTypes['User'] | null; // User
   }
   CultureValue: { // field return type
     id: string; // ID!
@@ -139,12 +140,12 @@ export interface NexusGenFieldTypes {
     id: string; // ID!
   }
   Mutation: { // field return type
-    addTeamUser: NexusGenRootTypes['Team']; // Team!
+    addTeamUser: NexusGenRootTypes['Team'] | null; // Team
     deleteUser: NexusGenRootTypes['DeletePayload']; // DeletePayload!
     login: NexusGenRootTypes['AuthPayload']; // AuthPayload!
-    removeTeamUser: NexusGenRootTypes['Team']; // Team!
+    removeTeamUser: NexusGenRootTypes['Team'] | null; // Team
     signup: NexusGenRootTypes['AuthPayload']; // AuthPayload!
-    updateResponse: NexusGenRootTypes['UpdateResponsePayload']; // UpdateResponsePayload!
+    updateResponse: NexusGenRootTypes['UpdateResponsePayload'] | null; // UpdateResponsePayload
     updateTeam: NexusGenRootTypes['Team']; // Team!
     updateTeamUser: NexusGenRootTypes['User']; // User!
     updateUser: NexusGenRootTypes['User']; // User!
@@ -158,9 +159,9 @@ export interface NexusGenFieldTypes {
   Response: { // field return type
     feeling: string | null; // String
     id: string | null; // String
-    sentAt: any | null; // DateTime
-    submittedAt: any | null; // DateTime
-    user: NexusGenRootTypes['User']; // User!
+    sentAt: string | null; // String
+    submittedAt: string | null; // String
+    user: NexusGenRootTypes['User'] | null; // User
     userId: string; // String!
   }
   Team: { // field return type
@@ -180,7 +181,8 @@ export interface NexusGenFieldTypes {
     email: string; // String!
     id: string; // ID!
     name: string; // String!
-    team: NexusGenRootTypes['Team']; // Team!
+    team: NexusGenRootTypes['Team'] | null; // Team
+    teamId: string; // String!
     tz: string; // String!
   }
 }

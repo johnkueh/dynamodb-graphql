@@ -86,6 +86,8 @@ export const UpdateResponseMutation = mutationField("updateResponse", {
       ...input
     });
 
+    if (response == null) return null;
+
     const user = await Queries.fetchUserById(response.userId);
 
     if (user == null) return null;

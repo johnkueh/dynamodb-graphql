@@ -9,7 +9,7 @@ input AddTeamUserInput {
 
 type AuthPayload {
   jwt: String!
-  user: User!
+  user: User
 }
 
 type CultureValue {
@@ -38,12 +38,12 @@ input LoginInput {
 }
 
 type Mutation {
-  addTeamUser(input: AddTeamUserInput!): Team!
+  addTeamUser(input: AddTeamUserInput!): Team
   deleteUser(input: DeleteUserInput!): DeletePayload!
   login(input: LoginInput!): AuthPayload!
-  removeTeamUser(id: String!): Team!
+  removeTeamUser(id: String!): Team
   signup(input: SignupInput!): AuthPayload!
-  updateResponse(input: UpdateResponseInput!): UpdateResponsePayload!
+  updateResponse(input: UpdateResponseInput!): UpdateResponsePayload
   updateTeam(input: UpdateTeamInput!): Team!
   updateTeamUser(input: UpdateTeamUserInput!): User!
   updateUser(input: UpdateUserInput!): User!
@@ -59,9 +59,9 @@ type Query {
 type Response {
   feeling: String
   id: String
-  sentAt: DateTime
-  submittedAt: DateTime
-  user: User!
+  sentAt: String
+  submittedAt: String
+  user: User
   userId: String!
 }
 
@@ -121,6 +121,7 @@ type User {
   email: String!
   id: ID!
   name: String!
-  team: Team!
+  team: Team
+  teamId: String!
   tz: String!
 }
