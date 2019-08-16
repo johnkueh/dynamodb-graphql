@@ -8,7 +8,7 @@ import {
 } from "../helpers";
 import { userObject } from "./user";
 import {
-  Input,
+  CreateTeamInput,
   UpdateTeamInput,
   User,
   Team,
@@ -26,7 +26,9 @@ export const fetchTeamById = async (teamId: string) => {
   const { Item: object } = await DocumentClient.get(params).promise();
   return object as Team;
 };
-export const createTeam = async (data: Input) => {
+export const createTeam = async (data: CreateTeamInput) => {
+  const { ...input } = data;
+
   const uuid = uuidv4();
   const params = {
     TableName,
@@ -34,7 +36,7 @@ export const createTeam = async (data: Input) => {
       PK: uuid,
       SK: "team",
       id: uuid,
-      ...data
+      ...input
     }
   };
 
@@ -43,13 +45,20 @@ export const createTeam = async (data: Input) => {
 };
 export const updateTeam = async (data: UpdateTeamInput) => {
   const { id: teamId, ...input } = data;
+  const { name, emoji, moods, recognition } = input;
+
   const params = {
     TableName,
     Key: {
       PK: teamId,
       SK: "team"
     },
-    ...makeUpdateExpression(input),
+    ...makeUpdateExpression({
+      name,
+      emoji,
+      moods,
+      recognition
+    }),
     ReturnValues: "ALL_NEW"
   };
 

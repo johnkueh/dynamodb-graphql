@@ -6,7 +6,12 @@ import {
   makeUpdateExpression,
   client as DocumentClient
 } from "../helpers";
-import { Input, Response, TeamResponseByDateRangeInput } from "../types";
+import {
+  Response,
+  CreateResponseInput,
+  UpdateResponseInput,
+  FetchresponsesForTeamByDateRangeInput
+} from "../types";
 
 export const fetchResponseById = async (responseId: string) => {
   const params = {
@@ -19,7 +24,7 @@ export const fetchResponseById = async (responseId: string) => {
   const { Item: object } = await DocumentClient.get(params).promise();
   return object as Response;
 };
-export const createResponse = async (data: Response) => {
+export const createResponse = async (data: CreateResponseInput) => {
   const { userId, teamId, sentAt, ...input } = data;
   const PK = uuidv4();
   const SK = "response";
@@ -42,7 +47,7 @@ export const createResponse = async (data: Response) => {
   await DocumentClient.put(params).promise();
   return fetchResponseById(PK);
 };
-export const updateResponse = async (data: Input) => {
+export const updateResponse = async (data: UpdateResponseInput) => {
   const { id: responseId, ...input } = data;
 
   const schema = yup.object().shape({
@@ -51,22 +56,27 @@ export const updateResponse = async (data: Input) => {
 
   await validate(input, schema);
 
+  const { sentAt, submittedAt, feeling } = input;
+
   const params = {
     TableName,
     Key: {
       PK: responseId,
       SK: "response"
     },
-    ...makeUpdateExpression(input),
+    ...makeUpdateExpression({
+      sentAt,
+      submittedAt,
+      feeling
+    }),
     ReturnValues: "ALL_NEW"
   };
 
   const { Attributes: object } = await DocumentClient.update(params).promise();
   return object as Response;
 };
-
 export const fetchResponsesForTeamByDateRange = async (
-  input: TeamResponseByDateRangeInput
+  input: FetchresponsesForTeamByDateRangeInput
 ) => {
   const { teamId, fromDate, toDate } = input;
   const params = {

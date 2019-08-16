@@ -8,9 +8,9 @@ import {
 import {
   Culture,
   CultureInput,
-  AddCultureInput,
-  RemoveCultureInput,
-  AddCulturesInput
+  AddCultureToTeamInput,
+  AddCulturesToTeamInput,
+  RemoveCultureInput
 } from "../types";
 
 export const fetchCultureById = async (cultureId: string) => {
@@ -22,7 +22,7 @@ export const fetchCultureById = async (cultureId: string) => {
     }
   };
   const { Item: object } = await DocumentClient.get(params).promise();
-  return object;
+  return object as Culture;
 };
 export const createCulture = async (input: CultureInput) => {
   const { name, position } = input;
@@ -72,7 +72,7 @@ export const fetchCultureForTeam = async (teamId: string) => {
   const { Items } = await DocumentClient.query(params).promise();
   return Items as Culture[];
 };
-export const addCultureToTeam = async (input: AddCultureInput) => {
+export const addCultureToTeam = async (input: AddCultureToTeamInput) => {
   const { cultureId, teamId, position } = input;
   const culture = await fetchCultureById(cultureId);
 
@@ -98,7 +98,7 @@ export const addCultureToTeam = async (input: AddCultureInput) => {
 export const addCulturesToTeam = async ({
   cultureIds,
   teamId
-}: AddCulturesInput) => {
+}: AddCulturesToTeamInput) => {
   await Promise.all(
     cultureIds.map((cultureId, idx) => {
       return addCultureToTeam({

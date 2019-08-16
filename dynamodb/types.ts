@@ -1,23 +1,5 @@
 import { APIGatewayProxyEvent } from "aws-lambda";
 
-export interface DynamodbItem {
-  id: string;
-  PK: string;
-  SK: string;
-  GSI1PK?: string;
-  GSI1SK?: string;
-  GSI2PK?: string;
-  GSI2SK?: string;
-}
-
-type ItemProperty = string | boolean | number | undefined | null;
-type JwtWithOptionsFunc = (options: Record<string, string>) => string;
-type ValidPasswordFunc = (password: string) => boolean;
-
-export interface Input {
-  [key: string]: ItemProperty;
-}
-
 export interface User extends DynamodbItem {
   email: string;
   jwt: string;
@@ -28,7 +10,6 @@ export interface User extends DynamodbItem {
   team?: Team;
   jwtWithOptions: JwtWithOptionsFunc;
   validPassword: ValidPasswordFunc;
-  [key: string]: ItemProperty | Team | JwtWithOptionsFunc | ValidPasswordFunc;
 }
 
 export interface Team extends DynamodbItem {
@@ -37,25 +18,23 @@ export interface Team extends DynamodbItem {
   moods: boolean;
   recognition: boolean;
   users?: User[];
-  [key: string]: ItemProperty | User[];
 }
 
 export interface Response extends DynamodbItem {
+  submittedAt?: string;
   sentAt?: string;
   userId?: string;
   user?: User;
-  [key: string]: ItemProperty | User;
 }
 
 export interface Culture extends DynamodbItem {
+  name?: string;
   teamId: string;
   cultureId: string;
   position: number;
-  [key: string]: ItemProperty;
 }
-export interface CultureValue extends Culture {
-  name?: string;
-}
+
+export interface CultureValue extends Culture {}
 
 export interface AddUserToTeamInput {
   user: User;
@@ -63,30 +42,74 @@ export interface AddUserToTeamInput {
 }
 
 export interface CultureInput {
-  name?: string;
-  position?: number;
+  name: string;
+  position: number;
 }
-export interface AddCultureInput {
+
+export interface CreateResponseInput {
+  userId: string;
+  teamId: string;
+  sentAt: string;
+}
+
+export interface UpdateResponseInput {
+  id: string;
+  submittedAt?: string;
+  sentAt?: string;
+  feeling?: string;
+}
+
+export interface FetchresponsesForTeamByDateRangeInput {
+  teamId: string;
+  fromDate: string;
+  toDate: string;
+}
+
+export interface AddCultureToTeamInput {
   cultureId: string;
   teamId: string;
   position: number;
 }
 
-export interface RemoveCultureInput extends AddCultureInput {}
+export interface RemoveCultureInput extends AddCultureToTeamInput {}
 
-export interface AddCulturesInput {
+export interface AddCulturesToTeamInput {
   cultureIds: string[];
   teamId: string;
 }
 
-export interface UpdateTeamInput extends Input {
-  id: string;
+export interface CreateTeamInput {
+  name: string;
+  emoji?: string;
+  moods?: boolean;
+  recognition?: boolean;
 }
 
-export interface TeamResponseByDateRangeInput {
-  teamId: string;
-  fromDate: string | undefined | null;
-  toDate: string | undefined | null;
+export interface UpdateTeamInput {
+  id: string;
+  name?: string;
+  emoji?: string;
+  moods?: boolean;
+  recognition?: boolean;
+}
+
+export interface CreateUserInput {
+  email: string;
+  password: string;
+  name: string;
+  tz: string;
+}
+
+export interface CreateUserWithTeamInput extends CreateUserInput {
+  teamName: string;
+}
+
+export interface UpdateUserInput {
+  id: string;
+  name?: string;
+  email?: string;
+  password?: string;
+  tz?: string;
 }
 
 export interface VerifiedToken {
@@ -104,4 +127,22 @@ export interface UserContext {
 
 export interface ServerContext {
   context: object;
+}
+
+export interface DynamodbItem {
+  id: string;
+  PK: string;
+  SK: string;
+  GSI1PK?: string;
+  GSI1SK?: string;
+  GSI2PK?: string;
+  GSI2SK?: string;
+}
+
+type ItemProperty = string | boolean | number | undefined | null;
+type JwtWithOptionsFunc = (options: Record<string, string>) => string;
+type ValidPasswordFunc = (password: string) => boolean;
+
+export interface Input {
+  [key: string]: ItemProperty;
 }

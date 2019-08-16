@@ -10,7 +10,12 @@ import {
   client as DocumentClient
 } from "../helpers";
 import * as Team from "./team";
-import { Input, User } from "../types";
+import {
+  CreateUserInput,
+  CreateUserWithTeamInput,
+  UpdateUserInput,
+  User
+} from "../types";
 
 export const fetchUserById = async (userId: string) => {
   const params = {
@@ -36,7 +41,7 @@ export const fetchUserByEmail = async (email: string) => {
   const user = Items[0];
   return userObject(user);
 };
-export const createUser = async (data: Input) => {
+export const createUser = async (data: CreateUserInput) => {
   await validate(data, userInputSchema);
 
   const { email, password, ...input } = data;
@@ -62,14 +67,16 @@ export const createUser = async (data: Input) => {
   await DocumentClient.put(params).promise();
   return fetchUserById(PK);
 };
-export const updateUser = async (data: Input) => {
+export const updateUser = async (data: UpdateUserInput) => {
   await validate(data, userInputSchema);
 
-  const { id: userId, password, ...input } = data;
+  const { id: userId, ...input } = data;
 
-  if (password != null) {
-    input.password = bcrypt.hashSync(password.toString(), 10);
+  if (input.password != null) {
+    input.password = bcrypt.hashSync(input.password.toString(), 10);
   }
+
+  const { name, email, password, tz } = input;
 
   const params = {
     TableName,
@@ -77,7 +84,12 @@ export const updateUser = async (data: Input) => {
       PK: userId,
       SK: "user"
     },
-    ...makeUpdateExpression(input),
+    ...makeUpdateExpression({
+      name,
+      email,
+      password,
+      tz
+    }),
     ReturnValues: "ALL_NEW"
   };
 
@@ -96,7 +108,7 @@ export const deleteUser = async ({ id: userId }: { id: string }) => {
   const { Attributes: user } = await DocumentClient.delete(params).promise();
   return userObject(user);
 };
-export const createUserWithTeam = async (data: Input) => {
+export const createUserWithTeam = async (data: CreateUserWithTeamInput) => {
   const schema = yup.object().shape({
     name: yup.string().min(1),
     email: yup
@@ -127,12 +139,11 @@ export const createUserWithTeam = async (data: Input) => {
 
   return user;
 };
-
-export const userObject = (user: Input | undefined) => {
+export const userObject = (user: AWS.DynamoDB.AttributeMap | undefined) => {
   if (user == null) return null;
 
   return {
-    jwtWithOptions: (options: Input) =>
+    jwtWithOptions: (options: Record<string, string>) =>
       jsonwebtoken.sign(
         { id: user.PK, email: user.email, options },
         "JWTSECRET"
@@ -147,7 +158,6 @@ export const userObject = (user: Input | undefined) => {
     ...user
   } as User;
 };
-
 const userInputSchema = yup.object().shape({
   name: yup.string().min(1),
   email: yup
