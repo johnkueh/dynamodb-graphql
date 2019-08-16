@@ -274,6 +274,6 @@ Object {
 }
 `;
 
-exports[`Updating team users not able to update not own team members 1`] = `"{\\"http\\":{\\"headers\\":{}},\\"errors\\":[{\\"message\\":\\"ValidationError\\",\\"locations\\":[{\\"line\\":3,\\"column\\":7}],\\"path\\":[\\"updateTeamUser\\"],\\"extensions\\":{\\"code\\":\\"BAD_USER_INPUT\\",\\"exception\\":{\\"errors\\":{\\"auth\\":\\"You are not authorized to perform this action\\"}}}}],\\"data\\":null}"`;
+exports[`Updating team users not able to update not own team members 1`] = `"{\\"http\\":{\\"headers\\":{}},\\"errors\\":[{\\"message\\":\\"ValidationError\\",\\"locations\\":[{\\"line\\":3,\\"column\\":7}],\\"path\\":[\\"updateTeamUser\\"],\\"extensions\\":{\\"code\\":\\"BAD_USER_INPUT\\",\\"exception\\":{\\"errors\\":{\\"auth\\":\\"You are not authorized to perform this action\\"}}}}],\\"data\\":{\\"updateTeamUser\\":null}}"`;
 
-exports[`Updating team users not able to update with invalid timezone 1`] = `"{\\"http\\":{\\"headers\\":{}},\\"errors\\":[{\\"message\\":\\"ValidationError\\",\\"locations\\":[{\\"line\\":3,\\"column\\":7}],\\"path\\":[\\"updateTeamUser\\"],\\"extensions\\":{\\"code\\":\\"BAD_USER_INPUT\\",\\"exception\\":{\\"errors\\":{\\"tz\\":\\"Timezone is not valid\\"}}}}],\\"data\\":null}"`;
+exports[`Updating team users not able to update with invalid timezone 1`] = `"{\\"http\\":{\\"headers\\":{}},\\"errors\\":[{\\"message\\":\\"ValidationError\\",\\"locations\\":[{\\"line\\":3,\\"column\\":7}],\\"path\\":[\\"updateTeamUser\\"],\\"extensions\\":{\\"code\\":\\"BAD_USER_INPUT\\",\\"exception\\":{\\"errors\\":{\\"tz\\":\\"Timezone is not valid\\"}}}}],\\"data\\":{\\"updateTeamUser\\":null}}"`;

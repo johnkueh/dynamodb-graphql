@@ -3,8 +3,8 @@
 
 
 input AddTeamUserInput {
-  email: String
-  name: String
+  email: String!
+  name: String!
 }
 
 type AuthPayload {
@@ -42,11 +42,11 @@ type Mutation {
   deleteUser(input: DeleteUserInput!): User
   login(input: LoginInput!): AuthPayload!
   removeTeamUser(id: String!): Team
-  signup(input: SignupInput!): AuthPayload!
+  signup(input: SignupInput!): AuthPayload
   updateResponse(input: UpdateResponseInput!): UpdateResponsePayload
   updateTeam(input: UpdateTeamInput!): Team!
-  updateTeamUser(input: UpdateTeamUserInput!): User!
-  updateUser(input: UpdateUserInput!): User!
+  updateTeamUser(input: UpdateTeamUserInput!): User
+  updateUser(input: UpdateUserInput!): User
 }
 
 type Query {
@@ -66,8 +66,8 @@ type Response {
 }
 
 input ResponsesFilterInput {
-  from: String
-  to: String
+  from: String!
+  to: String!
 }
 
 input SignupInput {
@@ -89,7 +89,7 @@ type Team {
 
 input UpdateResponseInput {
   feeling: String
-  id: String
+  id: String!
 }
 
 type UpdateResponsePayload {
@@ -100,15 +100,15 @@ type UpdateResponsePayload {
 input UpdateTeamInput {
   cultureValueIds: [String!]
   emoji: String
-  id: String
+  id: String!
   moods: Boolean
   name: String
   recognition: Boolean
 }
 
 input UpdateTeamUserInput {
-  id: String
-  tz: String
+  id: String!
+  tz: String!
 }
 
 input UpdateUserInput {

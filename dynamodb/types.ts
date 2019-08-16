@@ -56,7 +56,7 @@ export interface UpdateResponseInput {
   id: string;
   submittedAt?: string;
   sentAt?: string;
-  feeling?: string;
+  feeling?: string | null;
 }
 
 export interface FetchresponsesForTeamByDateRangeInput {
@@ -87,17 +87,18 @@ export interface CreateTeamInput {
 
 export interface UpdateTeamInput {
   id: string;
-  name?: string;
-  emoji?: string;
-  moods?: boolean;
-  recognition?: boolean;
+  name?: string | null;
+  emoji?: string | null;
+  moods?: boolean | null;
+  recognition?: boolean | null;
+  cultureValueIds?: string[];
 }
 
 export interface CreateUserInput {
   email: string;
-  password: string;
   name: string;
-  tz: string;
+  password?: string;
+  tz?: string;
 }
 
 export interface CreateUserWithTeamInput extends CreateUserInput {
@@ -106,10 +107,10 @@ export interface CreateUserWithTeamInput extends CreateUserInput {
 
 export interface UpdateUserInput {
   id: string;
-  name?: string;
-  email?: string;
-  password?: string;
-  tz?: string;
+  name?: string | null | undefined;
+  email?: string | null | undefined;
+  password?: string | null | undefined;
+  tz?: string | null | undefined;
 }
 
 export interface VerifiedToken {
@@ -124,6 +125,8 @@ export interface LambdaArguments {
 export interface UserContext {
   user: object | null;
 }
+
+export interface ctx extends UserContext {}
 
 export interface ServerContext {
   context: object;

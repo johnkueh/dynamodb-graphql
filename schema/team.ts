@@ -44,7 +44,7 @@ export const TeamQuery = queryField("team", {
 export const UpdateTeamInputType = inputObjectType({
   name: "UpdateTeamInput",
   definition(t) {
-    t.string("id");
+    t.string("id", { required: true });
     t.string("name");
     t.string("emoji");
     t.boolean("moods");
@@ -61,11 +61,11 @@ export const UpdateTeamMutation = mutationField("updateTeam", {
       required: true
     })
   },
-  resolve: async (
-    parent,
-    { input: anInput, input: { id: teamId, cultureValueIds, ...input } },
-    ctx
-  ) => {
+  resolve: async (parent, data) => {
+    const {
+      input: { id: teamId, cultureValueIds, ...input }
+    } = data;
+
     if (!isEmpty(input)) {
       await Queries.updateTeam({
         id: teamId,
@@ -88,8 +88,8 @@ export const UpdateTeamMutation = mutationField("updateTeam", {
 export const AddTeamUserInputType = inputObjectType({
   name: "AddTeamUserInput",
   definition(t) {
-    t.string("name");
-    t.string("email");
+    t.string("name", { required: true });
+    t.string("email", { required: true });
   }
 });
 
@@ -119,13 +119,14 @@ export const AddTeamUserMutation = mutationField("addTeamUser", {
 export const UpdateTeamUserInputType = inputObjectType({
   name: "UpdateTeamUserInput",
   definition(t) {
-    t.string("id");
-    t.string("tz");
+    t.string("id", { required: true });
+    t.string("tz", { required: true });
   }
 });
 
 export const UpdateTeamUserMutation = mutationField("updateTeamUser", {
   type: "User",
+  nullable: true,
   args: {
     input: arg({
       type: UpdateTeamUserInputType,

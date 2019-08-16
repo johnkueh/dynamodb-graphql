@@ -47,6 +47,7 @@ export const SignupInputType = inputObjectType({
 
 export const SignupMutation = mutationField("signup", {
   type: AuthPayloadType,
+  nullable: true,
   args: {
     input: arg({
       type: SignupInputType,
@@ -118,6 +119,7 @@ export const UpdateUserInputType = inputObjectType({
 
 export const UpdateUserMutation = mutationField("updateUser", {
   type: UserType,
+  nullable: true,
   args: {
     input: arg({
       type: UpdateUserInputType,

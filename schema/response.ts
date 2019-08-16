@@ -31,8 +31,8 @@ export const ResponseType = objectType({
 export const ResponsesFilterInputType = inputObjectType({
   name: "ResponsesFilterInput",
   definition(t) {
-    t.string("from");
-    t.string("to");
+    t.string("from", { required: true });
+    t.string("to", { required: true });
   }
 });
 
@@ -58,7 +58,7 @@ export const ResponsesQuery = queryField("responses", {
 export const UpdateResponseInputType = inputObjectType({
   name: "UpdateResponseInput",
   definition(t) {
-    t.string("id");
+    t.string("id", { required: true });
     t.string("feeling");
   }
 });
@@ -82,10 +82,12 @@ export const UpdateResponseMutation = mutationField("updateResponse", {
       required: true
     })
   },
-  resolve: async (parent, { input }) => {
+  resolve: async (parent, data) => {
+    const { id, feeling } = data.input;
     const response = await Queries.updateResponse({
-      submittedAt: moment().toISOString(),
-      ...input
+      id,
+      feeling,
+      submittedAt: moment().toISOString()
     });
 
     if (response == null) return null;

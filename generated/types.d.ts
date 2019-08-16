@@ -22,8 +22,8 @@ declare global {
 
 export interface NexusGenInputs {
   AddTeamUserInput: { // input type
-    email?: string | null; // String
-    name?: string | null; // String
+    email: string; // String!
+    name: string; // String!
   }
   DeleteUserInput: { // input type
     id: string; // String!
@@ -33,8 +33,8 @@ export interface NexusGenInputs {
     password: string; // String!
   }
   ResponsesFilterInput: { // input type
-    from?: string | null; // String
-    to?: string | null; // String
+    from: string; // String!
+    to: string; // String!
   }
   SignupInput: { // input type
     email: string; // String!
@@ -44,19 +44,19 @@ export interface NexusGenInputs {
   }
   UpdateResponseInput: { // input type
     feeling?: string | null; // String
-    id?: string | null; // String
+    id: string; // String!
   }
   UpdateTeamInput: { // input type
     cultureValueIds?: string[] | null; // [String!]
     emoji?: string | null; // String
-    id?: string | null; // String
+    id: string; // String!
     moods?: boolean | null; // Boolean
     name?: string | null; // String
     recognition?: boolean | null; // Boolean
   }
   UpdateTeamUserInput: { // input type
-    id?: string | null; // String
-    tz?: string | null; // String
+    id: string; // String!
+    tz: string; // String!
   }
   UpdateUserInput: { // input type
     email?: string | null; // String
@@ -123,11 +123,11 @@ export interface NexusGenFieldTypes {
     deleteUser: NexusGenRootTypes['User'] | null; // User
     login: NexusGenRootTypes['AuthPayload']; // AuthPayload!
     removeTeamUser: NexusGenRootTypes['Team'] | null; // Team
-    signup: NexusGenRootTypes['AuthPayload']; // AuthPayload!
+    signup: NexusGenRootTypes['AuthPayload'] | null; // AuthPayload
     updateResponse: NexusGenRootTypes['UpdateResponsePayload'] | null; // UpdateResponsePayload
     updateTeam: NexusGenRootTypes['Team']; // Team!
-    updateTeamUser: NexusGenRootTypes['User']; // User!
-    updateUser: NexusGenRootTypes['User']; // User!
+    updateTeamUser: NexusGenRootTypes['User'] | null; // User
+    updateUser: NexusGenRootTypes['User'] | null; // User
   }
   Query: { // field return type
     cultureValues: NexusGenRootTypes['CultureValue'][]; // [CultureValue!]!
