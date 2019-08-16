@@ -1,5 +1,8 @@
 import { DocumentClient } from "../lib/dynamodb-client";
-import { Input } from "./types";
+
+interface ExpressionInput {
+  [key: string]: string | boolean | null | undefined;
+}
 
 interface ExpressionAttributeNames {
   [key: string]: string;
@@ -10,7 +13,7 @@ interface ExpressionAttributeValues {
 
 export const TableName = process.env.DYNAMODB_TABLE || "dynamodb-table";
 export const client = DocumentClient;
-export const makeUpdateExpression = (input: Input) => {
+export const makeUpdateExpression = (input: ExpressionInput) => {
   const keys = Object.keys(input);
   const expressions = [] as Array<String>;
   const ExpressionAttributeNames = {} as ExpressionAttributeNames;
@@ -31,7 +34,7 @@ export const makeUpdateExpression = (input: Input) => {
     ExpressionAttributeValues
   };
 };
-export const makeKeyConditionExpression = (input: Input) => {
+export const makeKeyConditionExpression = (input: ExpressionInput) => {
   const keys = Object.keys(input);
   const expressions = [] as Array<String>;
   const ExpressionAttributeNames = {} as ExpressionAttributeNames;

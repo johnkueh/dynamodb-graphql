@@ -10,7 +10,7 @@ import {
   Response,
   CreateResponseInput,
   UpdateResponseInput,
-  FetchresponsesForTeamByDateRangeInput
+  FetchResponsesForTeamByDateRangeInput
 } from "../types";
 
 export const fetchResponseById = async (responseId: string) => {
@@ -76,7 +76,7 @@ export const updateResponse = async (data: UpdateResponseInput) => {
   return object as Response;
 };
 export const fetchResponsesForTeamByDateRange = async (
-  input: FetchresponsesForTeamByDateRangeInput
+  input: FetchResponsesForTeamByDateRangeInput
 ) => {
   const { teamId, fromDate, toDate } = input;
   const params = {
