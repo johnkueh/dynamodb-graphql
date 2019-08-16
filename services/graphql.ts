@@ -1,5 +1,4 @@
 import { join } from "path";
-import { APIGatewayProxyEvent } from "aws-lambda";
 import { ApolloServer } from "apollo-server-lambda";
 import { makeSchema } from "nexus";
 import { applyMiddleware } from "graphql-middleware";
@@ -7,23 +6,12 @@ import jsonwebtoken from "jsonwebtoken";
 import * as types from "../schema";
 import { permissions } from "../permissions";
 import { Queries } from "../dynamodb/queries";
-
-interface VerifiedToken {
-  id: string;
-  email: string;
-}
-
-interface LambdaArguments {
-  event: APIGatewayProxyEvent;
-}
-
-interface UserContext {
-  user: object | null;
-}
-
-interface ServerContext {
-  context: object;
-}
+import {
+  VerifiedToken,
+  LambdaArguments,
+  UserContext,
+  ServerContext
+} from "../dynamodb/types";
 
 const schema = applyMiddleware(
   makeSchema({
@@ -31,6 +19,14 @@ const schema = applyMiddleware(
     outputs: {
       schema: join(__dirname, "../../generated/schema.graphql"),
       typegen: join(__dirname, "../../generated/types.d.ts")
+    },
+    typegenAutoConfig: {
+      sources: [
+        {
+          source: join(__dirname, "../../dynamodb/types.ts"),
+          alias: "t"
+        }
+      ]
     }
   }),
   permissions

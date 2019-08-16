@@ -20,6 +20,7 @@ export const UserType = objectType({
       nullable: true,
       type: "Team",
       resolve: async ({ teamId }) => {
+        if (teamId == null) return null;
         return Queries.fetchTeamById(teamId);
       }
     });
@@ -139,7 +140,8 @@ export const DeleteUserInputType = inputObjectType({
 });
 
 export const DeleteUserMutation = mutationField("deleteUser", {
-  type: "DeletePayload",
+  type: UserType,
+  nullable: true,
   args: {
     input: arg({
       type: DeleteUserInputType,
@@ -147,7 +149,11 @@ export const DeleteUserMutation = mutationField("deleteUser", {
     })
   },
   resolve: async (parent, { input }, ctx) => {
-    const user = await Queries.deleteUser(input.id);
+    const user = await Queries.deleteUser({
+      id: input.id
+    });
+
+    if (user == null) return null;
     return user;
   }
 });

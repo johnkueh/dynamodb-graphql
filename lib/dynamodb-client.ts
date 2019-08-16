@@ -3,6 +3,7 @@ import AWS from "aws-sdk";
 const local = process.env.IS_OFFLINE || process.env.NODE_ENV === "test";
 const config = local
   ? {
+      region: "localhost",
       endpoint: "http://localhost:8000"
     }
   : {};

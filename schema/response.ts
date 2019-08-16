@@ -20,6 +20,8 @@ export const ResponseType = objectType({
       type: "User",
       nullable: true,
       resolve: async parent => {
+        if (parent.userId == null) return null;
+
         return Queries.fetchUserById(parent.userId);
       }
     });
@@ -87,17 +89,16 @@ export const UpdateResponseMutation = mutationField("updateResponse", {
     });
 
     if (response == null) return null;
+    if (response.userId == null) return null;
 
     const user = await Queries.fetchUserById(response.userId);
 
     if (user == null) return null;
 
-    const jwt = user.jwtWithOptions({
-      expiresIn: "1h" // We want this token to expire quickly
-    });
-
     return {
-      jwt,
+      jwt: user.jwtWithOptions({
+        expiresIn: "1h" // We want this token to expire quickly
+      }),
       response
     };
   }

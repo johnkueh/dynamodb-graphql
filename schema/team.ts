@@ -19,12 +19,14 @@ export const TeamType = objectType({
     t.boolean("recognition");
     t.list.field("users", {
       type: "User",
+      nullable: true,
       resolve: async ({ id: teamId }) => {
         return Queries.fetchTeamUsers({ teamId });
       }
     });
     t.list.field("cultureValues", {
       type: "CultureValue",
+      nullable: true,
       resolve: async ({ id: teamId }) => {
         return Queries.fetchCultureForTeam(teamId);
       }
@@ -64,14 +66,14 @@ export const UpdateTeamMutation = mutationField("updateTeam", {
     { input: anInput, input: { id: teamId, cultureValueIds, ...input } },
     ctx
   ) => {
-    if (!isEmpty(input) && teamId != null) {
+    if (!isEmpty(input)) {
       await Queries.updateTeam({
         id: teamId,
         ...input
       });
     }
 
-    if (teamId != null && cultureValueIds != null) {
+    if (cultureValueIds != null) {
       await Queries.removeCulturesFromTeam(teamId);
       await Queries.addCulturesToTeam({
         cultureIds: cultureValueIds,

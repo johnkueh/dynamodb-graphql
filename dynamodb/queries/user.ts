@@ -10,16 +10,7 @@ import {
   client as DocumentClient
 } from "../helpers";
 import * as Team from "./team";
-
-export interface UserType {
-  id: string;
-  jwtWithOptions: (options: Record<string, string>) => string;
-  validPassword: (password: string) => boolean;
-  email: string;
-  jwt: string;
-  teamId: string;
-  team: object;
-}
+import { Input, User } from "../types";
 
 export const fetchUserById = async (userId: string) => {
   const params = {
@@ -45,10 +36,10 @@ export const fetchUserByEmail = async (email: string) => {
   const user = Items[0];
   return userObject(user);
 };
-export const createUser = async (data: Record<string, string>) => {
+export const createUser = async (data: Input) => {
   await validate(data, userInputSchema);
 
-  const { email, password = "", ...input } = data;
+  const { email, password, ...input } = data;
 
   const PK = uuidv4();
   const SK = "user";
@@ -62,7 +53,7 @@ export const createUser = async (data: Record<string, string>) => {
       GSI1PK: "user",
       GSI1SK: email,
       tz: "America/Los_Angeles",
-      password: bcrypt.hashSync(password, 10),
+      password: password && bcrypt.hashSync(password.toString(), 10),
       email,
       ...input
     }
@@ -71,13 +62,13 @@ export const createUser = async (data: Record<string, string>) => {
   await DocumentClient.put(params).promise();
   return fetchUserById(PK);
 };
-export const updateUser = async (data: Record<string, string>) => {
+export const updateUser = async (data: Input) => {
   await validate(data, userInputSchema);
 
   const { id: userId, password, ...input } = data;
 
   if (password != null) {
-    input.password = bcrypt.hashSync(password, 10);
+    input.password = bcrypt.hashSync(password.toString(), 10);
   }
 
   const params = {
@@ -102,9 +93,10 @@ export const deleteUser = async ({ id: userId }: { id: string }) => {
     }
   };
 
-  return DocumentClient.delete(params).promise();
+  const { Attributes: user } = await DocumentClient.delete(params).promise();
+  return userObject(user);
 };
-export const createUserWithTeam = async (data: Record<string, string>) => {
+export const createUserWithTeam = async (data: Input) => {
   const schema = yup.object().shape({
     name: yup.string().min(1),
     email: yup
@@ -136,26 +128,24 @@ export const createUserWithTeam = async (data: Record<string, string>) => {
   return user;
 };
 
-export const userObject = (
-  user: Record<string, string> | undefined
-): UserType | null => {
+export const userObject = (user: Input | undefined) => {
   if (user == null) return null;
 
   return {
-    jwtWithOptions: (options: Record<string, string>) =>
+    jwtWithOptions: (options: Input) =>
       jsonwebtoken.sign(
         { id: user.PK, email: user.email, options },
         "JWTSECRET"
       ),
     jwt: jsonwebtoken.sign({ id: user.PK, email: user.email }, "JWTSECRET"),
     validPassword: (password: string) =>
-      bcrypt.compareSync(password, user.password),
+      user.password && bcrypt.compareSync(password, user.password.toString()),
     id: user.PK,
     teamId: user.GSI2PK,
     email: user.GSI1SK,
     team: {},
     ...user
-  };
+  } as User;
 };
 
 const userInputSchema = yup.object().shape({

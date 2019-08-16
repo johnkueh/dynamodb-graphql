@@ -5,23 +5,13 @@ import {
   makeKeyConditionExpression,
   client as DocumentClient
 } from "../helpers";
-
-interface CultureInput {
-  name?: string;
-  position?: number;
-}
-interface AddCultureInput {
-  cultureId: string;
-  teamId: string;
-  position: number;
-}
-
-interface RemoveCultureInput extends AddCultureInput {}
-
-interface AddCulturesInput {
-  cultureIds: string[];
-  teamId: string;
-}
+import {
+  Culture,
+  CultureInput,
+  AddCultureInput,
+  RemoveCultureInput,
+  AddCulturesInput
+} from "../types";
 
 export const fetchCultureById = async (cultureId: string) => {
   const params = {
@@ -63,7 +53,7 @@ export const fetchCultures = async () => {
   };
 
   const { Items } = await DocumentClient.query(params).promise();
-  return Items;
+  return Items as Culture[];
 };
 export const fetchCultureForTeam = async (teamId: string) => {
   const params = {
@@ -80,7 +70,7 @@ export const fetchCultureForTeam = async (teamId: string) => {
   };
 
   const { Items } = await DocumentClient.query(params).promise();
-  return Items;
+  return Items as Culture[];
 };
 export const addCultureToTeam = async (input: AddCultureInput) => {
   const { cultureId, teamId, position } = input;

@@ -3,7 +3,7 @@
  * Do not make changes to this file directly
  */
 
-
+import * as t from "../dynamodb/types"
 import { core } from "nexus"
 declare global {
   interface NexusGenCustomInputMethods<TypeName extends string> {
@@ -73,46 +73,25 @@ export interface NexusGenRootTypes {
     jwt: string; // String!
     user?: NexusGenRootTypes['User'] | null; // User
   }
-  CultureValue: { // root type
-    id: string; // ID!
-    name: string; // String!
-  }
+  CultureValue: t.CultureValue;
   DeletePayload: { // root type
     id: string; // ID!
   }
   Mutation: {};
   Query: {};
-  Response: { // root type
-    feeling?: string | null; // String
-    id?: string | null; // String
-    sentAt?: string | null; // String
-    submittedAt?: string | null; // String
-    userId: string; // String!
-  }
-  Team: { // root type
-    emoji: string; // String!
-    id: string; // ID!
-    moods: boolean; // Boolean!
-    name: string; // String!
-    recognition: boolean; // Boolean!
-  }
+  Response: t.Response;
+  Team: t.Team;
   UpdateResponsePayload: { // root type
     jwt: string; // String!
     response: NexusGenRootTypes['Response']; // Response!
   }
-  User: { // root type
-    email: string; // String!
-    id: string; // ID!
-    name: string; // String!
-    teamId: string; // String!
-    tz: string; // String!
-  }
+  User: t.User;
   String: string;
   Int: number;
   Float: number;
   Boolean: boolean;
   ID: string;
-  DateTime: any;
+  DateTime: DateTime;
 }
 
 export interface NexusGenAllTypes extends NexusGenRootTypes {
@@ -141,7 +120,7 @@ export interface NexusGenFieldTypes {
   }
   Mutation: { // field return type
     addTeamUser: NexusGenRootTypes['Team'] | null; // Team
-    deleteUser: NexusGenRootTypes['DeletePayload']; // DeletePayload!
+    deleteUser: NexusGenRootTypes['User'] | null; // User
     login: NexusGenRootTypes['AuthPayload']; // AuthPayload!
     removeTeamUser: NexusGenRootTypes['Team'] | null; // Team
     signup: NexusGenRootTypes['AuthPayload']; // AuthPayload!
@@ -165,13 +144,13 @@ export interface NexusGenFieldTypes {
     userId: string; // String!
   }
   Team: { // field return type
-    cultureValues: NexusGenRootTypes['CultureValue'][]; // [CultureValue!]!
+    cultureValues: NexusGenRootTypes['CultureValue'][] | null; // [CultureValue!]
     emoji: string; // String!
     id: string; // ID!
     moods: boolean; // Boolean!
     name: string; // String!
     recognition: boolean; // Boolean!
-    users: NexusGenRootTypes['User'][]; // [User!]!
+    users: NexusGenRootTypes['User'][] | null; // [User!]
   }
   UpdateResponsePayload: { // field return type
     jwt: string; // String!
@@ -242,7 +221,7 @@ export type NexusGenScalarNames = "Boolean" | "DateTime" | "Float" | "ID" | "Int
 export type NexusGenUnionNames = never;
 
 export interface NexusGenTypes {
-  context: any;
+  context: {};
   inputTypes: NexusGenInputs;
   rootTypes: NexusGenRootTypes;
   argTypes: NexusGenArgTypes;

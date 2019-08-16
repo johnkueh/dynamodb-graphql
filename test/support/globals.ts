@@ -1,3 +1,5 @@
+import dotenv from "dotenv";
+dotenv.config({ path: ".env.test" });
 import { DocumentClient } from "../../lib/dynamodb-client";
 
 beforeAll(() => {});

@@ -39,7 +39,7 @@ input LoginInput {
 
 type Mutation {
   addTeamUser(input: AddTeamUserInput!): Team
-  deleteUser(input: DeleteUserInput!): DeletePayload!
+  deleteUser(input: DeleteUserInput!): User
   login(input: LoginInput!): AuthPayload!
   removeTeamUser(id: String!): Team
   signup(input: SignupInput!): AuthPayload!
@@ -78,13 +78,13 @@ input SignupInput {
 }
 
 type Team {
-  cultureValues: [CultureValue!]!
+  cultureValues: [CultureValue!]
   emoji: String!
   id: ID!
   moods: Boolean!
   name: String!
   recognition: Boolean!
-  users: [User!]!
+  users: [User!]
 }
 
 input UpdateResponseInput {

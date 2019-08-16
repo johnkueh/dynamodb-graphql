@@ -1,20 +1,27 @@
 import { DocumentClient } from "../lib/dynamodb-client";
+import { Input } from "./types";
 
-interface InputObject {
+interface ExpressionAttributeNames {
   [key: string]: string;
+}
+interface ExpressionAttributeValues {
+  [key: string]: string | boolean | number;
 }
 
 export const TableName = process.env.DYNAMODB_TABLE || "dynamodb-table";
 export const client = DocumentClient;
-export const makeUpdateExpression = (input: InputObject) => {
+export const makeUpdateExpression = (input: Input) => {
   const keys = Object.keys(input);
   const expressions = [] as Array<String>;
-  const ExpressionAttributeNames = {} as Record<string, string>;
-  const ExpressionAttributeValues = {} as Record<string, string>;
+  const ExpressionAttributeNames = {} as ExpressionAttributeNames;
+  const ExpressionAttributeValues = {} as ExpressionAttributeValues;
   keys.forEach(key => {
-    expressions.push(`#${key} = :${key}`);
-    ExpressionAttributeNames[`#${key}`] = key;
-    ExpressionAttributeValues[`:${key}`] = input[key];
+    const inputKey = input[key];
+    if (inputKey != null) {
+      expressions.push(`#${key} = :${key}`);
+      ExpressionAttributeNames[`#${key}`] = key;
+      ExpressionAttributeValues[`:${key}`] = inputKey;
+    }
   });
 
   const UpdateExpression = `set ${expressions.join(", ")}`;
@@ -24,15 +31,18 @@ export const makeUpdateExpression = (input: InputObject) => {
     ExpressionAttributeValues
   };
 };
-export const makeKeyConditionExpression = (input: InputObject) => {
+export const makeKeyConditionExpression = (input: Input) => {
   const keys = Object.keys(input);
   const expressions = [] as Array<String>;
-  const ExpressionAttributeNames = {} as Record<string, string>;
-  const ExpressionAttributeValues = {} as Record<string, string>;
+  const ExpressionAttributeNames = {} as ExpressionAttributeNames;
+  const ExpressionAttributeValues = {} as ExpressionAttributeValues;
   keys.forEach(key => {
-    expressions.push(`#${key} = :${key}`);
-    ExpressionAttributeNames[`#${key}`] = key;
-    ExpressionAttributeValues[`:${key}`] = input[key];
+    const inputKey = input[key];
+    if (inputKey != null) {
+      expressions.push(`#${key} = :${key}`);
+      ExpressionAttributeNames[`#${key}`] = key;
+      ExpressionAttributeValues[`:${key}`] = inputKey;
+    }
   });
 
   const KeyConditionExpression = `${expressions.join(" and ")}`;
