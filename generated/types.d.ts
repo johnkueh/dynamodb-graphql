@@ -133,7 +133,7 @@ export interface NexusGenFieldTypes {
     cultureValues: NexusGenRootTypes['CultureValue'][]; // [CultureValue!]!
     me: NexusGenRootTypes['User']; // User!
     responses: NexusGenRootTypes['Response'][]; // [Response!]!
-    team: NexusGenRootTypes['Team']; // Team!
+    team: NexusGenRootTypes['Team'] | null; // Team
   }
   Response: { // field return type
     feeling: string | null; // String
@@ -221,7 +221,7 @@ export type NexusGenScalarNames = "Boolean" | "DateTime" | "Float" | "ID" | "Int
 export type NexusGenUnionNames = never;
 
 export interface NexusGenTypes {
-  context: {};
+  context: t.Context;
   inputTypes: NexusGenInputs;
   rootTypes: NexusGenRootTypes;
   argTypes: NexusGenArgTypes;

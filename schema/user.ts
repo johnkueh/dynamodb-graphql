@@ -127,8 +127,11 @@ export const UpdateUserMutation = mutationField("updateUser", {
     })
   },
   resolve: async (parent, { input }, ctx) => {
+    const userId = ctx.user && ctx.user.id;
+    if (userId == null) return null;
+
     return Queries.updateUser({
-      id: ctx.user.id,
+      id: userId,
       ...input
     });
   }

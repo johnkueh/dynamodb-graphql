@@ -111,11 +111,10 @@ export interface VerifiedToken {
 export interface LambdaArguments {
   event: APIGatewayProxyEvent;
 }
-export interface UserContext {
-  user: object | null;
+export interface Context {
+  user: User | null;
 }
-export interface ctx extends UserContext {}
-export interface ServerContext {
+export interface MakeServer {
   context: object;
 }
 

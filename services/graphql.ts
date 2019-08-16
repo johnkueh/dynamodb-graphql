@@ -9,8 +9,8 @@ import { Queries } from "../dynamodb/queries";
 import {
   VerifiedToken,
   LambdaArguments,
-  UserContext,
-  ServerContext
+  Context,
+  MakeServer
 } from "../dynamodb/types";
 
 const schema = applyMiddleware(
@@ -26,15 +26,14 @@ const schema = applyMiddleware(
           source: join(__dirname, "../../dynamodb/types.ts"),
           alias: "t"
         }
-      ]
+      ],
+      contextType: "t.Context"
     }
   }),
   permissions
 );
 
-const userContext = async ({
-  event
-}: LambdaArguments): Promise<UserContext> => {
+const userContext = async ({ event }: LambdaArguments): Promise<Context> => {
   let user = null;
 
   const { Authorization } = event.headers;
@@ -51,7 +50,7 @@ const userContext = async ({
   };
 };
 
-export const makeServer = ({ context }: ServerContext) => {
+export const makeServer = ({ context }: MakeServer) => {
   return new ApolloServer({
     introspection: true,
     playground: true,

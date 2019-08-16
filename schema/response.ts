@@ -47,8 +47,11 @@ export const ResponsesQuery = queryField("responses", {
   },
   resolve: async (parent, args, ctx) => {
     const { from, to } = args.input;
+    const teamId = ctx.user && ctx.user.teamId;
+    if (teamId == null) return [];
+
     return Queries.fetchResponsesForTeamByDateRange({
-      teamId: ctx.user.teamId,
+      teamId,
       fromDate: from,
       toDate: to
     });

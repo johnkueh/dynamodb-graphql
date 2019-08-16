@@ -53,7 +53,7 @@ type Query {
   cultureValues: [CultureValue!]!
   me: User!
   responses(input: ResponsesFilterInput!): [Response!]!
-  team: Team!
+  team: Team
 }
 
 type Response {

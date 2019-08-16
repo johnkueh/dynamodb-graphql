@@ -36,8 +36,12 @@ export const TeamType = objectType({
 
 export const TeamQuery = queryField("team", {
   type: TeamType,
+  nullable: true,
   resolve: async (parent, args, ctx) => {
-    return Queries.fetchTeamById(ctx.user.teamId);
+    const teamId = ctx.user && ctx.user.teamId;
+    if (teamId == null) return null;
+
+    return Queries.fetchTeamById(teamId);
   }
 });
 
@@ -103,14 +107,15 @@ export const AddTeamUserMutation = mutationField("addTeamUser", {
     })
   },
   resolve: async (parent, { input }, ctx) => {
+    const teamId = ctx.user && ctx.user.teamId;
+    if (teamId == null) return null;
+
     const user = await Queries.createUser(input);
-    const team = await Queries.fetchTeamById(ctx.user.teamId);
+    const team = await Queries.fetchTeamById(teamId);
 
     if (user != null && team != null) {
       await Queries.addUserToTeam({ user, team });
     }
-
-    if (team == null) return null;
 
     return team;
   }
@@ -147,11 +152,14 @@ export const RemoveTeamUserMutation = mutationField("removeTeamUser", {
     })
   },
   resolve: async (parent, { id }, ctx) => {
+    const teamId = ctx.user && ctx.user.teamId;
+    if (teamId == null) return null;
+
     if (id != null) {
       await Queries.removeUserFromTeam({ userId: id });
     }
 
-    const team = await Queries.fetchTeamById(ctx.user.teamId);
+    const team = await Queries.fetchTeamById(teamId);
     return team;
   }
 });
