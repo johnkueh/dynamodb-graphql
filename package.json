@@ -11,7 +11,8 @@
     "test": "NODE_ENV=test sls dynamodb start --inMemory & yarn jest",
     "test:local": "yarn test --watch",
     "nexus": "NODE_ENV=development nodemon --exec babel-node nexus.js",
-    "start": "NODE_ENV=development sls dynamodb start & sls offline"
+    "start": "NODE_ENV=development sls dynamodb start & sls offline",
+    "deploy:staging": "sls deploy --stage staging"
   },
   "dependencies": {
     "@babel/preset-env": "^7.5.5",

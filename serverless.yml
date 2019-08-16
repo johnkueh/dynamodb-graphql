@@ -13,6 +13,7 @@ provider:
     - Effect: Allow
       Action:
         - "ses:SendEmail"
+        - "ses:SendTemplatedEmail"
       Resource:
         - "*"
     - Effect: Allow
@@ -52,8 +53,8 @@ package:
   individually: true
 
 functions:
-  responseEmailer:
-    handler: services/response-emailer.handler
+  moodSurveyEmailer:
+    handler: services/mood-survey-emailer.handler
     events:
       - stream:
           type: dynamodb
@@ -74,3 +75,4 @@ functions:
 
 resources:
   - ${file(resources/dynamodb-table.yml)}
+  - ${file(resources/ses-templates.yml)}

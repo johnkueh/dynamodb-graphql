@@ -37,22 +37,14 @@ const processRecord = async (record: DynamoDBRecord) => {
     Destination: {
       ToAddresses: [user.email]
     },
-    Message: {
-      Body: {
-        Html: {
-          Charset: "UTF-8",
-          Data: `How was work at ${team.name} today? Rate your day`
-        }
-      },
-      Subject: {
-        Charset: "UTF-8",
-        Data: "[Test] How was work today?"
-      }
-    },
-    Source: "Vibejar <support@vibejar.com>"
+    Source: "Vibejar <support@vibejar.com>",
+    Template: "DailyMoodSurveyEmailTemplate",
+    TemplateData: JSON.stringify({
+      companyName: team.name
+    })
   };
 
-  await SES.sendEmail(params).promise();
+  await SES.sendTemplatedEmail(params).promise();
   await Queries.updateResponse({
     id: PK,
     sentAt: moment().toISOString()

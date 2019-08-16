@@ -1,0 +1,14 @@
+Resources:
+  DailyMoodSurveyEmailTemplate:
+    Type: AWS::SES::Template
+    Properties:
+      Template:
+        TemplateName: DailyMoodSurveyEmailTemplate
+        SubjectPart: How was work today?
+        TextPart: How was work at {{companyName}} today? Rate your day
+        HtmlPart: <p>How was work at {{companyName}} today?</p><p>Rate your day</p>
+
+Outputs:
+  DailyMoodSurveyEmailTemplate:
+    Value:
+      Ref: DailyMoodSurveyEmailTemplate
