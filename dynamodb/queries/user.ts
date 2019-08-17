@@ -1,6 +1,6 @@
 import uuidv4 from "uuid/v4";
 import bcrypt from "bcryptjs";
-import jsonwebtoken from "jsonwebtoken";
+
 import * as yup from "yup";
 import { validate, validateTimezone } from "../../lib/validate";
 import {
@@ -9,6 +9,7 @@ import {
   TableName,
   client as DocumentClient
 } from "../helpers";
+import { makeUser } from "../make-user";
 import * as Team from "./team";
 import {
   CreateUserInput,
@@ -17,7 +18,7 @@ import {
   User
 } from "../types";
 
-export const fetchUserById = async (userId: string) => {
+export const fetchUserById = async (userId: string): Promise<User | null> => {
   const params = {
     TableName,
     Key: {
@@ -26,9 +27,11 @@ export const fetchUserById = async (userId: string) => {
     }
   };
   const { Item: user } = await DocumentClient.get(params).promise();
-  return userObject(user);
+  if (user == null) return null;
+
+  return makeUser(user as User);
 };
-export const fetchUserByEmail = async (email: string) => {
+export const fetchUserByEmail = async (email: string): Promise<User | null> => {
   const params = {
     TableName,
     IndexName: "GSI1",
@@ -39,9 +42,13 @@ export const fetchUserByEmail = async (email: string) => {
   };
   const { Items = [] } = await DocumentClient.query(params).promise();
   const user = Items[0];
-  return userObject(user);
+  if (user == null) return null;
+
+  return makeUser(user as User);
 };
-export const createUser = async (data: CreateUserInput) => {
+export const createUser = async (
+  data: CreateUserInput
+): Promise<User | null> => {
   await validate(data, userInputSchema);
 
   const { email, password, ...input } = data;
@@ -65,9 +72,10 @@ export const createUser = async (data: CreateUserInput) => {
   };
 
   await DocumentClient.put(params).promise();
-  return fetchUserById(PK);
+  const user = fetchUserById(PK);
+  return user;
 };
-export const updateUser = async (data: UpdateUserInput) => {
+export const updateUser = async (data: UpdateUserInput): Promise<User> => {
   await validate(data, userInputSchema);
 
   const { id: userId, ...input } = data;
@@ -94,9 +102,13 @@ export const updateUser = async (data: UpdateUserInput) => {
   };
 
   const { Attributes: user } = await DocumentClient.update(params).promise();
-  return userObject(user);
+  return makeUser(user as User);
 };
-export const deleteUser = async ({ id: userId }: { id: string }) => {
+export const deleteUser = async ({
+  id: userId
+}: {
+  id: string;
+}): Promise<User> => {
   const params = {
     TableName,
     Key: {
@@ -106,9 +118,11 @@ export const deleteUser = async ({ id: userId }: { id: string }) => {
   };
 
   const { Attributes: user } = await DocumentClient.delete(params).promise();
-  return userObject(user);
+  return makeUser(user as User);
 };
-export const createUserWithTeam = async (data: CreateUserWithTeamInput) => {
+export const createUserWithTeam = async (
+  data: CreateUserWithTeamInput
+): Promise<User> => {
   const schema = yup.object().shape({
     name: yup.string().min(1),
     email: yup
@@ -137,26 +151,7 @@ export const createUserWithTeam = async (data: CreateUserWithTeamInput) => {
     }
   }
 
-  return user;
-};
-export const userObject = (user: AWS.DynamoDB.AttributeMap | undefined) => {
-  if (user == null) return null;
-
-  return {
-    jwtWithOptions: (options: Record<string, string>) =>
-      jsonwebtoken.sign(
-        { id: user.PK, email: user.email, options },
-        "JWTSECRET"
-      ),
-    jwt: jsonwebtoken.sign({ id: user.PK, email: user.email }, "JWTSECRET"),
-    validPassword: (password: string) =>
-      user.password && bcrypt.compareSync(password, user.password.toString()),
-    id: user.PK,
-    teamId: user.GSI2PK,
-    email: user.GSI1SK,
-    team: {},
-    ...user
-  } as User;
+  return user as User;
 };
 const userInputSchema = yup.object().shape({
   name: yup.string().min(1),
@@ -164,11 +159,15 @@ const userInputSchema = yup.object().shape({
     .string()
     .email()
     .min(1)
-    .test("is-unique", "Email is taken", async value => {
-      if (value == null) return true;
-      const user = await fetchUserByEmail(value);
-      return user == null;
-    }),
+    .test(
+      "is-unique",
+      "Email is taken",
+      async (value): Promise<boolean> => {
+        if (value == null) return true;
+        const user = await fetchUserByEmail(value);
+        return user == null;
+      }
+    ),
   password: yup.string().min(6),
   tz: validateTimezone()
 });

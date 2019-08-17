@@ -13,7 +13,9 @@ import {
   FetchResponsesForTeamByDateRangeInput
 } from "../types";
 
-export const fetchResponseById = async (responseId: string) => {
+export const fetchResponseById = async (
+  responseId: string
+): Promise<Response> => {
   const params = {
     TableName,
     Key: {
@@ -24,7 +26,9 @@ export const fetchResponseById = async (responseId: string) => {
   const { Item: object } = await DocumentClient.get(params).promise();
   return object as Response;
 };
-export const createResponse = async (data: CreateResponseInput) => {
+export const createResponse = async (
+  data: CreateResponseInput
+): Promise<Response> => {
   const { userId, teamId, sentAt, ...input } = data;
   const PK = uuidv4();
   const SK = "response";
@@ -47,7 +51,9 @@ export const createResponse = async (data: CreateResponseInput) => {
   await DocumentClient.put(params).promise();
   return fetchResponseById(PK);
 };
-export const updateResponse = async (data: UpdateResponseInput) => {
+export const updateResponse = async (
+  data: UpdateResponseInput
+): Promise<Response> => {
   const { id: responseId, ...input } = data;
 
   const schema = yup.object().shape({
@@ -77,7 +83,7 @@ export const updateResponse = async (data: UpdateResponseInput) => {
 };
 export const fetchResponsesForTeamByDateRange = async (
   input: FetchResponsesForTeamByDateRangeInput
-) => {
+): Promise<Response[]> => {
   const { teamId, fromDate, toDate } = input;
   const params = {
     TableName,

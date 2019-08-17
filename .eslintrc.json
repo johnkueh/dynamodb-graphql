@@ -2,19 +2,17 @@
   "extends": [
     "airbnb-typescript/base",
     "eslint:recommended",
-    "plugin:react/recommended",
     "plugin:@typescript-eslint/recommended",
     "prettier/@typescript-eslint",
     "plugin:prettier/recommended"
   ],
-  "plugins": ["react", "@typescript-eslint", "prettier"],
-  "env": {
-    "browser": true,
-    "jasmine": true,
-    "jest": true
-  },
+  "plugins": ["@typescript-eslint", "prettier"],
   "rules": {
-    "prettier/prettier": ["error"]
+    "@typescript-eslint/no-use-before-define": "off",
+    "import/no-extraneous-dependencies": [
+      "error",
+      { "devDependencies": true, "peerDependencies": true }
+    ]
   },
   "settings": {},
   "parser": "@typescript-eslint/parser"

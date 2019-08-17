@@ -31,7 +31,7 @@ export interface Culture extends DynamodbItem {
   cultureId: string;
   position: number;
 }
-export interface CultureValue extends Culture {}
+export type CultureValue = Culture;
 export interface CultureInput {
   name: string;
   position: number;
@@ -41,7 +41,7 @@ export interface AddCultureToTeamInput {
   teamId: string;
   position: number;
 }
-export interface RemoveCultureInput extends AddCultureToTeamInput {}
+export type RemoveCultureInput = AddCultureToTeamInput;
 export interface AddCulturesToTeamInput {
   cultureIds: string[];
   teamId: string;
@@ -83,8 +83,8 @@ export interface User extends DynamodbItem {
   tz?: string;
   teamId?: string;
   team?: Team;
-  jwtWithOptions: JwtWithOptionsFunc;
-  validPassword: ValidPasswordFunc;
+  jwtWithOptions?: JwtWithOptionsFunc;
+  validPassword?: ValidPasswordFunc;
 }
 export interface CreateUserInput {
   email: string;

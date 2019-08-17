@@ -6,7 +6,7 @@ import {
   TableName,
   client as DocumentClient
 } from "../helpers";
-import { userObject } from "./user";
+import { makeUser } from "../make-user";
 import {
   CreateTeamInput,
   UpdateTeamInput,
@@ -15,7 +15,7 @@ import {
   AddUserToTeamInput
 } from "../types";
 
-export const fetchTeamById = async (teamId: string) => {
+export const fetchTeamById = async (teamId: string): Promise<Team | null> => {
   const params = {
     TableName,
     Key: {
@@ -26,7 +26,7 @@ export const fetchTeamById = async (teamId: string) => {
   const { Item: object } = await DocumentClient.get(params).promise();
   return object as Team;
 };
-export const createTeam = async (data: CreateTeamInput) => {
+export const createTeam = async (data: CreateTeamInput): Promise<Team> => {
   const { ...input } = data;
 
   const uuid = uuidv4();
@@ -41,9 +41,10 @@ export const createTeam = async (data: CreateTeamInput) => {
   };
 
   await DocumentClient.put(params).promise();
-  return fetchTeamById(uuid);
+  const team = await fetchTeamById(uuid);
+  return team as Team;
 };
-export const updateTeam = async (data: UpdateTeamInput) => {
+export const updateTeam = async (data: UpdateTeamInput): Promise<Team> => {
   const { id: teamId, ...input } = data;
   const { name, emoji, moods, recognition } = input;
 
@@ -65,7 +66,11 @@ export const updateTeam = async (data: UpdateTeamInput) => {
   const { Attributes: object } = await DocumentClient.update(params).promise();
   return object as Team;
 };
-export const deleteTeam = async ({ id: teamId }: { id: string }) => {
+export const deleteTeam = async ({
+  id: teamId
+}: {
+  id: string;
+}): Promise<Team> => {
   const params = {
     TableName,
     Key: {
@@ -77,7 +82,11 @@ export const deleteTeam = async ({ id: teamId }: { id: string }) => {
   const { Attributes: object } = await DocumentClient.delete(params).promise();
   return object as Team;
 };
-export const fetchTeamUsers = async ({ teamId }: { teamId: string }) => {
+export const fetchTeamUsers = async ({
+  teamId
+}: {
+  teamId: string;
+}): Promise<User[]> => {
   const params = {
     TableName,
     IndexName: "GSI2",
@@ -89,7 +98,10 @@ export const fetchTeamUsers = async ({ teamId }: { teamId: string }) => {
   const { Items } = await DocumentClient.query(params).promise();
   return Items as User[];
 };
-export const addUserToTeam = async ({ user, team }: AddUserToTeamInput) => {
+export const addUserToTeam = async ({
+  user,
+  team
+}: AddUserToTeamInput): Promise<User> => {
   const params = {
     TableName,
     Key: {
@@ -107,7 +119,11 @@ export const addUserToTeam = async ({ user, team }: AddUserToTeamInput) => {
   user.team = team;
   return Attributes as User;
 };
-export const removeUserFromTeam = async ({ userId }: { userId: string }) => {
+export const removeUserFromTeam = async ({
+  userId
+}: {
+  userId: string;
+}): Promise<User> => {
   const params = {
     TableName,
     Key: {
@@ -118,5 +134,5 @@ export const removeUserFromTeam = async ({ userId }: { userId: string }) => {
     ReturnValues: "ALL_NEW"
   };
   const { Attributes } = await DocumentClient.update(params).promise();
-  return userObject(Attributes);
+  return makeUser(Attributes as User);
 };
