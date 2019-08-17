@@ -4,8 +4,17 @@ import moment from "moment";
 import { SES } from "../lib/ses-client";
 import { Queries } from "../dynamodb/queries";
 
-export const handler = async (event: DynamoDBStreamEvent) => {
-  await Promise.all(event.Records.map(record => processRecord(record)));
+interface HandlerResponse {
+  statusCode: number;
+  body: string;
+}
+
+export const handler = async (
+  event: DynamoDBStreamEvent
+): Promise<HandlerResponse> => {
+  await Promise.all(
+    event.Records.map((record): Promise<void> => processRecord(record))
+  );
   return {
     statusCode: 200,
     body: JSON.stringify({
@@ -14,7 +23,7 @@ export const handler = async (event: DynamoDBStreamEvent) => {
   };
 };
 
-const processRecord = async (record: DynamoDBRecord) => {
+const processRecord = async (record: DynamoDBRecord): Promise<void> => {
   const { eventName, dynamodb } = record;
 
   if (dynamodb == null) return;
@@ -49,4 +58,8 @@ const processRecord = async (record: DynamoDBRecord) => {
     id: PK,
     sentAt: moment().toISOString()
   });
+};
+
+export default {
+  handler
 };

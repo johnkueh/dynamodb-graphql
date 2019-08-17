@@ -271,8 +271,7 @@ describe("Updating user profile", () => {
     await Queries.createUser({
       name: "Death Toll",
       email: "taken@email.com",
-      password: "deathishere",
-      teamName: "Kroll"
+      password: "deathishere"
     });
 
     const res = await performQuery({

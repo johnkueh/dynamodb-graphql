@@ -6,7 +6,6 @@ import {
   TableName,
   client as DocumentClient
 } from "../helpers";
-import { makeUser } from "../make-user";
 import {
   CreateTeamInput,
   UpdateTeamInput,
@@ -101,7 +100,7 @@ export const fetchTeamUsers = async ({
 export const addUserToTeam = async ({
   user,
   team
-}: AddUserToTeamInput): Promise<User> => {
+}: AddUserToTeamInput): Promise<void> => {
   const params = {
     TableName,
     Key: {
@@ -114,16 +113,15 @@ export const addUserToTeam = async ({
     }),
     ReturnValues: "ALL_NEW"
   };
-  const { Attributes } = await DocumentClient.update(params).promise();
+  await DocumentClient.update(params).promise();
   user.teamId = team.id;
   user.team = team;
-  return Attributes as User;
 };
 export const removeUserFromTeam = async ({
   userId
 }: {
   userId: string;
-}): Promise<User> => {
+}): Promise<void> => {
   const params = {
     TableName,
     Key: {
@@ -133,6 +131,5 @@ export const removeUserFromTeam = async ({
     UpdateExpression: "remove GSI2PK, GSI2SK",
     ReturnValues: "ALL_NEW"
   };
-  const { Attributes } = await DocumentClient.update(params).promise();
-  return makeUser(Attributes as User);
+  await DocumentClient.update(params).promise();
 };

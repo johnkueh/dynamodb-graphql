@@ -50,7 +50,7 @@ const userContext = async ({ event }: LambdaArguments): Promise<Context> => {
   };
 };
 
-export const makeServer = ({ context }: MakeServer) => {
+export const makeServer = ({ context }: MakeServer): ApolloServer => {
   return new ApolloServer({
     introspection: true,
     playground: true,
