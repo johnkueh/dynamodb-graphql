@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@babel/preset-env": "^7.5.5",
-    "apollo-server-lambda": "^2.8.0",
+    "apollo-server-lambda": "^2.14.2",
     "aws-lambda": "^0.1.2",
     "aws-sdk": "^2.504.0",
     "bcryptjs": "^2.4.3",
